@@ -42,14 +42,30 @@ class ExpenseReport(BaseModel):
     amount: float = Field(..., description="Total expense amount in USD")
     submitter: str = Field(..., description="Email address of the submitter")
     category: str = Field(..., description="Expense category")
-    description: str = Field(..., description="Expense description or business justification")
+    description: str = Field(
+        ..., description="Expense description or business justification"
+    )
     date: str = Field(..., description="Transaction date (YYYY-MM-DD)")
 
 
 class LLMReviewOutput(BaseModel):
-    summary: str = Field(..., description="Summary of the high-value expense evaluation")
-    risk_assessment: str = Field(..., description="Risk assessment of the business justification")
-    recommended_action: str = Field(..., description="Recommended action for the human manager")
+    summary: str = Field(
+        ..., description="Summary of the high-value expense evaluation"
+    )
+    risk_assessment: str = Field(
+        ..., description="Risk assessment of the business justification"
+    )
+    recommended_action: str = Field(
+        ..., description="Recommended action for the human manager"
+    )
+
+
+def _new_id(prefix: str) -> str:
+    return f"{prefix}-{uuid.uuid4().hex[:8].upper()}"
+
+
+def _utc_now_iso() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
 def _extract_raw_text(node_input: Any) -> str:
@@ -57,7 +73,9 @@ def _extract_raw_text(node_input: Any) -> str:
     if isinstance(node_input, str):
         return node_input.strip()
     if hasattr(node_input, "parts") and node_input.parts:
-        texts = [getattr(p, "text", "") for p in node_input.parts if getattr(p, "text", "")]
+        texts = [
+            getattr(p, "text", "") for p in node_input.parts if getattr(p, "text", "")
+        ]
         return "".join(texts).strip()
     if hasattr(node_input, "text") and node_input.text:
         return str(node_input.text).strip()
@@ -75,19 +93,23 @@ def sanitize_and_prevalidate(node_input: Any) -> Event:
         report = ExpenseReport(**node_input)
     else:
         raw_text = _extract_raw_text(node_input)
-        
+
         # Clean markdown code blocks if present (```json ... ```)
         cleaned_text = raw_text
         if "```" in cleaned_text:
-            cleaned_text = re.sub(r"^```(?:json)?\s*", "", cleaned_text, flags=re.MULTILINE)
-            cleaned_text = re.sub(r"```\s*$", "", cleaned_text, flags=re.MULTILINE).strip()
+            cleaned_text = re.sub(
+                r"^```(?:json)?\s*", "", cleaned_text, flags=re.MULTILINE
+            )
+            cleaned_text = re.sub(
+                r"```\s*$", "", cleaned_text, flags=re.MULTILINE
+            ).strip()
 
         # Attempt JSON parsing
         try:
             data = json.loads(cleaned_text)
             if isinstance(data, dict):
                 report = ExpenseReport(**data)
-        except Exception:
+        except (json.JSONDecodeError, TypeError, ValueError):
             pass
 
         # If still not parsed, parse natural language input
@@ -95,18 +117,15 @@ def sanitize_and_prevalidate(node_input: Any) -> Event:
             amt_match = AMOUNT_PATTERN.search(raw_text)
             extracted_amount = float(amt_match.group(1)) if amt_match else 50.0
 
-            # Detect category from keywords
-            detected_category = "meals"
+            # Detect category from keywords (prohibited takes priority over allowed)
             lower_text = raw_text.lower()
-            for cat in PROHIBITED_CATEGORIES:
-                if cat in lower_text:
-                    detected_category = cat
-                    break
-            else:
-                for cat in ALLOWED_CATEGORIES:
-                    if cat in lower_text:
-                        detected_category = cat
-                        break
+            detected_category = next(
+                (cat for cat in PROHIBITED_CATEGORIES if cat in lower_text), None
+            )
+            if detected_category is None:
+                detected_category = next(
+                    (cat for cat in ALLOWED_CATEGORIES if cat in lower_text), "meals"
+                )
 
             report = ExpenseReport(
                 amount=extracted_amount,
@@ -134,7 +153,10 @@ def sanitize_and_prevalidate(node_input: Any) -> Event:
         )
 
     # 3. Deterministic Low-Value Auto-Approval (Bypasses LLM: amount < $100)
-    if sanitized_report.amount < AUTO_APPROVE_THRESHOLD and sanitized_report.category in ALLOWED_CATEGORIES:
+    if (
+        sanitized_report.amount < AUTO_APPROVE_THRESHOLD
+        and sanitized_report.category in ALLOWED_CATEGORIES
+    ):
         return Event(
             output=sanitized_report.model_dump(),
             actions=EventActions(route="auto_approve"),
@@ -149,36 +171,42 @@ def sanitize_and_prevalidate(node_input: Any) -> Event:
 
 def auto_approve_node(node_input: dict[str, Any]) -> str:
     """Deterministic Auto-Approval Node (Zero LLM Tokens)."""
-    approval_id = f"APV-{uuid.uuid4().hex[:8].upper()}"
-    timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    return json.dumps({
-        "status": "APPROVED",
-        "approval_id": approval_id,
-        "amount": node_input["amount"],
-        "submitter": node_input["submitter"],
-        "category": node_input["category"],
-        "description": node_input["description"],
-        "date": node_input["date"],
-        "processed_at": timestamp,
-        "message": f"✅ [AUTO-APPROVED] Expense of ${node_input['amount']:.2f} auto-approved with no LLM call required.",
-    }, indent=2)
+    approval_id = _new_id("APV")
+    timestamp = _utc_now_iso()
+    return json.dumps(
+        {
+            "status": "APPROVED",
+            "approval_id": approval_id,
+            "amount": node_input["amount"],
+            "submitter": node_input["submitter"],
+            "category": node_input["category"],
+            "description": node_input["description"],
+            "date": node_input["date"],
+            "processed_at": timestamp,
+            "message": f"✅ [AUTO-APPROVED] Expense of ${node_input['amount']:.2f} auto-approved with no LLM call required.",
+        },
+        indent=2,
+    )
 
 
 def policy_violation_node(node_input: dict[str, Any]) -> str:
     """Deterministic Policy Violation Node (Zero LLM Tokens)."""
-    violation_id = f"VIO-{uuid.uuid4().hex[:8].upper()}"
-    timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    return json.dumps({
-        "status": "REJECTED_POLICY_VIOLATION",
-        "violation_id": violation_id,
-        "amount": node_input["amount"],
-        "submitter": node_input["submitter"],
-        "category": node_input["category"],
-        "description": node_input["description"],
-        "date": node_input["date"],
-        "logged_at": timestamp,
-        "message": f"❌ [POLICY VIOLATION] Prohibited category '{node_input['category']}'. Submission rejected deterministically.",
-    }, indent=2)
+    violation_id = _new_id("VIO")
+    timestamp = _utc_now_iso()
+    return json.dumps(
+        {
+            "status": "REJECTED_POLICY_VIOLATION",
+            "violation_id": violation_id,
+            "amount": node_input["amount"],
+            "submitter": node_input["submitter"],
+            "category": node_input["category"],
+            "description": node_input["description"],
+            "date": node_input["date"],
+            "logged_at": timestamp,
+            "message": f"❌ [POLICY VIOLATION] Prohibited category '{node_input['category']}'. Submission rejected deterministically.",
+        },
+        indent=2,
+    )
 
 
 # LLM Reviewer Agent Node for high-value expenses (>= $100)
@@ -197,16 +225,19 @@ Analyze the sanitized expense report, assess compliance with corporate policy, a
 
 def manager_escalation_node(node_input: Any) -> str:
     """Routes high-value expense to human manager approval queue after LLM review."""
-    ticket_id = f"TKT-{uuid.uuid4().hex[:8].upper()}"
-    timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    ticket_id = _new_id("TKT")
+    timestamp = _utc_now_iso()
     review_data = node_input if isinstance(node_input, dict) else {}
-    return json.dumps({
-        "status": "PENDING_MANAGER_REVIEW",
-        "ticket_id": ticket_id,
-        "queued_at": timestamp,
-        "llm_evaluation": review_data,
-        "message": "📋 [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.",
-    }, indent=2)
+    return json.dumps(
+        {
+            "status": "PENDING_MANAGER_REVIEW",
+            "ticket_id": ticket_id,
+            "queued_at": timestamp,
+            "llm_evaluation": review_data,
+            "message": "📋 [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.",
+        },
+        indent=2,
+    )
 
 
 # Graph Topology (ADK 2.0 Workflow API)
