@@ -1,29 +1,67 @@
 {
   "eval_cases": [
     {
-      "eval_case_id": "greeting",
+      "eval_case_id": "auto_approve_low_value_meal",
       "prompt": {
         "role": "user",
-        "parts": [{"text": "Hello, what can you help me with?"}]
-      }
-    },
-    {
-      "eval_case_id": "weather_query",
-      "prompt": {
-        "role": "user",
-        "parts": [{"text": "What's the weather like in San Francisco?"}]
-      }
-    },
-    {
-      "eval_case_id": "capital_lookup",
-      "prompt": {
-        "role": "user",
-        "parts": [{"text": "What is the capital of France?"}]
+        "parts": [{"text": "{\"amount\": 45.00, \"submitter\": \"alice@company.com\", \"category\": \"meals\", \"description\": \"Team lunch with client during Q3 planning\", \"date\": \"2026-08-15\"}"}]
       },
       "reference": {
         "response": {
           "role": "model",
-          "parts": [{"text": "The capital of France is Paris."}]
+          "parts": [{"text": "Expense auto-approved (status APPROVED): $45.00 meals expense for Team lunch with client during Q3 planning, no LLM call required since it is under the $100 auto-approve threshold and in an allowed category."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "auto_approve_office_supplies",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "{\"amount\": 30.00, \"submitter\": \"bob@company.com\", \"category\": \"office_supplies\", \"description\": \"Printer paper and toner for the finance team\", \"date\": \"2026-08-16\"}"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "Expense auto-approved (status APPROVED): $30.00 office_supplies expense for printer paper and toner, under the $100 threshold in an allowed category."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "policy_violation_prohibited_category",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "{\"amount\": 75.00, \"submitter\": \"carol@company.com\", \"category\": \"gambling\", \"description\": \"Casino night team building entertainment\", \"date\": \"2026-08-16\"}"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "Expense rejected for policy violation (status REJECTED_POLICY_VIOLATION): gambling is a prohibited category, so the submission is denied deterministically without any LLM call."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "high_value_routes_to_llm_review",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "{\"amount\": 450.00, \"submitter\": \"dave@company.com\", \"category\": \"travel\", \"description\": \"Round-trip flight to the annual sales conference\", \"date\": \"2026-08-17\"}"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "Since the amount is $100 or more, the expense is not auto-approved. It is reviewed by the LLM compliance reviewer and then queued for human manager approval (status PENDING_MANAGER_REVIEW)."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "pii_redaction_low_value",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "{\"amount\": 60.00, \"submitter\": \"erin@company.com\", \"category\": \"training\", \"description\": \"Certification exam fee, SSN 123-45-6789 on file for HR verification\", \"date\": \"2026-08-17\"}"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "Expense auto-approved (status APPROVED) for the $60.00 training certification fee. The SSN in the description must be redacted as [REDACTED_SSN] and the raw SSN 123-45-6789 must never appear in the response."}]
         }
       }
     }

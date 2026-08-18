@@ -13,25 +13,40 @@
 # limitations under the License.
 
 import contextlib
+import logging
 import os
 from collections.abc import AsyncIterator
 
-import google.auth
 from a2a.server.tasks import InMemoryTaskStore
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from google.adk.cli.fast_api import get_fast_api_app
 from google.adk.runners import Runner
-from google.cloud import logging as google_cloud_logging
 
 from app.app_utils import services
 from app.app_utils.a2a import attach_a2a_routes
 from app.app_utils.typing import Feedback
 
 load_dotenv()
-_, project_id = google.auth.default()
-logging_client = google_cloud_logging.Client()
-logger = logging_client.logger(__name__)
+
+
+class _LocalLogger:
+    """Stdlib logging fallback for the Cloud Logging subset used in this module."""
+
+    def __init__(self, name: str) -> None:
+        self._logger = logging.getLogger(name)
+
+    def log_struct(self, info: dict, severity: str = "DEFAULT") -> None:
+        self._logger.log(getattr(logging, severity, logging.INFO), info)
+
+
+if os.getenv("GOOGLE_CLOUD_PROJECT"):
+    from google.cloud import logging as google_cloud_logging
+
+    logger = google_cloud_logging.Client().logger(__name__)
+else:
+    logger = _LocalLogger(__name__)
+
 allow_origins = (
     os.getenv("ALLOW_ORIGINS", "").split(",") if os.getenv("ALLOW_ORIGINS") else None
 )

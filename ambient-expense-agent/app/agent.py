@@ -144,11 +144,16 @@ def sanitize_and_prevalidate(node_input: Any) -> Event:
         description=sanitized_description,
         date=report.date,
     )
+    sanitized_content = types.Content(
+        role="model",
+        parts=[types.Part(text=json.dumps(sanitized_report.model_dump(), indent=2))],
+    )
 
     # 2. Deterministic Prohibited Categories (Bypasses LLM)
     if sanitized_report.category in PROHIBITED_CATEGORIES:
         return Event(
             output=sanitized_report.model_dump(),
+            content=sanitized_content,
             actions=EventActions(route="policy_violation"),
         )
 
@@ -159,21 +164,32 @@ def sanitize_and_prevalidate(node_input: Any) -> Event:
     ):
         return Event(
             output=sanitized_report.model_dump(),
+            content=sanitized_content,
             actions=EventActions(route="auto_approve"),
         )
 
     # 4. High-Value / Contextual Review (Routes to LLM Reviewer: amount >= $100)
     return Event(
         output=sanitized_report.model_dump(),
+        content=sanitized_content,
         actions=EventActions(route="llm_review"),
     )
 
 
-def auto_approve_node(node_input: dict[str, Any]) -> str:
+def _event_from_result(result: dict[str, Any]) -> Event:
+    """Wraps a deterministic node's JSON result as both output and content."""
+    text = json.dumps(result, indent=2)
+    return Event(
+        output=text,
+        content=types.Content(role="model", parts=[types.Part(text=text)]),
+    )
+
+
+def auto_approve_node(node_input: dict[str, Any]) -> Event:
     """Deterministic Auto-Approval Node (Zero LLM Tokens)."""
     approval_id = _new_id("APV")
     timestamp = _utc_now_iso()
-    return json.dumps(
+    return _event_from_result(
         {
             "status": "APPROVED",
             "approval_id": approval_id,
@@ -184,16 +200,15 @@ def auto_approve_node(node_input: dict[str, Any]) -> str:
             "date": node_input["date"],
             "processed_at": timestamp,
             "message": f"✅ [AUTO-APPROVED] Expense of ${node_input['amount']:.2f} auto-approved with no LLM call required.",
-        },
-        indent=2,
+        }
     )
 
 
-def policy_violation_node(node_input: dict[str, Any]) -> str:
+def policy_violation_node(node_input: dict[str, Any]) -> Event:
     """Deterministic Policy Violation Node (Zero LLM Tokens)."""
     violation_id = _new_id("VIO")
     timestamp = _utc_now_iso()
-    return json.dumps(
+    return _event_from_result(
         {
             "status": "REJECTED_POLICY_VIOLATION",
             "violation_id": violation_id,
@@ -204,8 +219,7 @@ def policy_violation_node(node_input: dict[str, Any]) -> str:
             "date": node_input["date"],
             "logged_at": timestamp,
             "message": f"❌ [POLICY VIOLATION] Prohibited category '{node_input['category']}'. Submission rejected deterministically.",
-        },
-        indent=2,
+        }
     )
 
 
@@ -223,20 +237,19 @@ Analyze the sanitized expense report, assess compliance with corporate policy, a
 )
 
 
-def manager_escalation_node(node_input: Any) -> str:
+def manager_escalation_node(node_input: Any) -> Event:
     """Routes high-value expense to human manager approval queue after LLM review."""
     ticket_id = _new_id("TKT")
     timestamp = _utc_now_iso()
     review_data = node_input if isinstance(node_input, dict) else {}
-    return json.dumps(
+    return _event_from_result(
         {
             "status": "PENDING_MANAGER_REVIEW",
             "ticket_id": ticket_id,
             "queued_at": timestamp,
             "llm_evaluation": review_data,
             "message": "📋 [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.",
-        },
-        indent=2,
+        }
     )
 
 
