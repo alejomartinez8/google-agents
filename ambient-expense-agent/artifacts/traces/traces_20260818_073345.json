@@ -1,0 +1,340 @@
+{
+  "eval_cases": [
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"amount\": 45.00, \"submitter\": \"alice@company.com\", \"category\": \"meals\", \"description\": \"Team lunch with client during Q3 planning\", \"date\": \"2026-08-15\"}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-86119098\",\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\",\n  \"processed_at\": \"2026-08-18T12:33:58.678208+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\"\n}"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "reference": {
+        "response": {
+          "parts": [
+            {
+              "text": "Expense auto-approved (status APPROVED): $45.00 meals expense for Team lunch with client during Q3 planning, no LLM call required since it is under the $100 auto-approve threshold and in an allowed category."
+            }
+          ],
+          "role": "model"
+        }
+      },
+      "eval_case_id": "auto_approve_low_value_meal",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-86119098\",\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\",\n  \"processed_at\": \"2026-08-18T12:33:58.678208+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"amount\": 30.00, \"submitter\": \"bob@company.com\", \"category\": \"office_supplies\", \"description\": \"Printer paper and toner for the finance team\", \"date\": \"2026-08-16\"}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-5F84E64C\",\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\",\n  \"processed_at\": \"2026-08-18T12:33:58.681116+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\"\n}"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "reference": {
+        "response": {
+          "parts": [
+            {
+              "text": "Expense auto-approved (status APPROVED): $30.00 office_supplies expense for printer paper and toner, under the $100 threshold in an allowed category."
+            }
+          ],
+          "role": "model"
+        }
+      },
+      "eval_case_id": "auto_approve_office_supplies",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-5F84E64C\",\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\",\n  \"processed_at\": \"2026-08-18T12:33:58.681116+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"amount\": 75.00, \"submitter\": \"carol@company.com\", \"category\": \"gambling\", \"description\": \"Casino night team building entertainment\", \"date\": \"2026-08-16\"}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "{\n  \"status\": \"REJECTED_POLICY_VIOLATION\",\n  \"violation_id\": \"VIO-EBB929E5\",\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\",\n  \"logged_at\": \"2026-08-18T12:34:04.543766+00:00\",\n  \"message\": \"\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\"\n}"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "reference": {
+        "response": {
+          "parts": [
+            {
+              "text": "Expense rejected for policy violation (status REJECTED_POLICY_VIOLATION): gambling is a prohibited category, so the submission is denied deterministically without any LLM call."
+            }
+          ],
+          "role": "model"
+        }
+      },
+      "eval_case_id": "policy_violation_prohibited_category",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"status\": \"REJECTED_POLICY_VIOLATION\",\n  \"violation_id\": \"VIO-EBB929E5\",\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\",\n  \"logged_at\": \"2026-08-18T12:34:04.543766+00:00\",\n  \"message\": \"\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"amount\": 450.00, \"submitter\": \"dave@company.com\", \"category\": \"travel\", \"description\": \"Round-trip flight to the annual sales conference\", \"date\": \"2026-08-17\"}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "{\n  \"status\": \"PENDING_MANAGER_REVIEW\",\n  \"ticket_id\": \"TKT-73B44CF1\",\n  \"queued_at\": \"2026-08-18T12:34:08.048039+00:00\",\n  \"llm_evaluation\": {\n    \"summary\": \"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\n    \"risk_assessment\": \"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\n    \"recommended_action\": \"Approve\"\n  },\n  \"message\": \"\\ud83d\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\"\n}"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "reference": {
+        "response": {
+          "parts": [
+            {
+              "text": "Since the amount is $100 or more, the expense is not auto-approved. It is reviewed by the LLM compliance reviewer and then queued for human manager approval (status PENDING_MANAGER_REVIEW)."
+            }
+          ],
+          "role": "model"
+        }
+      },
+      "eval_case_id": "high_value_routes_to_llm_review",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"amount\": 450.0,\n  \"submitter\": \"dave@company.com\",\n  \"category\": \"travel\",\n  \"description\": \"Round-trip flight to the annual sales conference\",\n  \"date\": \"2026-08-17\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "llm_expense_reviewer",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\"summary\":\"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\"risk_assessment\":\"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\"recommended_action\":\"Approve\"}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"status\": \"PENDING_MANAGER_REVIEW\",\n  \"ticket_id\": \"TKT-73B44CF1\",\n  \"queued_at\": \"2026-08-18T12:34:08.048039+00:00\",\n  \"llm_evaluation\": {\n    \"summary\": \"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\n    \"risk_assessment\": \"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\n    \"recommended_action\": \"Approve\"\n  },\n  \"message\": \"\\ud83d\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"amount\": 60.00, \"submitter\": \"erin@company.com\", \"category\": \"training\", \"description\": \"Certification exam fee, SSN 123-45-6789 on file for HR verification\", \"date\": \"2026-08-17\"}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-26407DD5\",\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\",\n  \"processed_at\": \"2026-08-18T12:34:04.547271+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\"\n}"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "reference": {
+        "response": {
+          "parts": [
+            {
+              "text": "Expense auto-approved (status APPROVED) for the $60.00 training certification fee. The SSN in the description must be redacted as [REDACTED_SSN] and the raw SSN 123-45-6789 must never appear in the response."
+            }
+          ],
+          "role": "model"
+        }
+      },
+      "eval_case_id": "pii_redaction_low_value",
+      "agent_data": {
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "ambient_expense_workflow",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-26407DD5\",\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\",\n  \"processed_at\": \"2026-08-18T12:34:04.547271+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\"\n}"
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

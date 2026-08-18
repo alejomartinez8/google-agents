@@ -1,0 +1,945 @@
+{
+  "eval_case_results": [
+    {
+      "eval_case_index": 0,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The final response accurately details the expense auto-approval status, amount, category, description, submitter, and auto-approval reasoning, perfectly aligning with the expected outcome.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 1,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The final response accurately provides all details regarding the approved expense in a structured JSON format, fully aligning with the expected outcome that the expense of $30.00 for office supplies was auto-approved.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 2,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The agent's response accurately identified the prohibited category 'gambling' and correctly returned a policy violation rejection status that matches the expected answer.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 3,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The final response perfectly aligns with the expected behavior. Since the expense is over $100 ($450), it goes through the LLM review and is placed in the queue with status 'PENDING_MANAGER_REVIEW' for human manager approval.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "eval_case_index": 4,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 5.0,
+              "explanation": "The response accurately reflects the expected output: the expense was approved, and the sensitive SSN information was properly redacted as [REDACTED_SSN] with no raw SSN exposed.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "summary_metrics": [
+    {
+      "metric_name": "custom_response_quality",
+      "num_cases_total": 5,
+      "num_cases_valid": 5,
+      "num_cases_error": 0,
+      "mean_score": 5.0,
+      "stdev_score": 0.0,
+      "pass_rate": null
+    }
+  ],
+  "win_rates": null,
+  "evaluation_dataset": [
+    {
+      "bigquery_source": null,
+      "gcs_source": null,
+      "eval_cases": [
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"amount\": 45.00, \"submitter\": \"alice@company.com\", \"category\": \"meals\", \"description\": \"Team lunch with client during Q3 planning\", \"date\": \"2026-08-15\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-86119098\",\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\",\n  \"processed_at\": \"2026-08-18T12:33:58.678208+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\"\n}",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": {
+            "response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "Expense auto-approved (status APPROVED): $45.00 meals expense for Team lunch with client during Q3 planning, no LLM call required since it is under the $100 auto-approve threshold and in an allowed category.",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null
+                }
+              ],
+              "role": "model"
+            }
+          },
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "auto_approve_low_value_meal",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": null,
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-86119098\",\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\",\n  \"processed_at\": \"2026-08-18T12:33:58.678208+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"amount\": 30.00, \"submitter\": \"bob@company.com\", \"category\": \"office_supplies\", \"description\": \"Printer paper and toner for the finance team\", \"date\": \"2026-08-16\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-5F84E64C\",\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\",\n  \"processed_at\": \"2026-08-18T12:33:58.681116+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\"\n}",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": {
+            "response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "Expense auto-approved (status APPROVED): $30.00 office_supplies expense for printer paper and toner, under the $100 threshold in an allowed category.",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null
+                }
+              ],
+              "role": "model"
+            }
+          },
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "auto_approve_office_supplies",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": null,
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-5F84E64C\",\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\",\n  \"processed_at\": \"2026-08-18T12:33:58.681116+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"amount\": 75.00, \"submitter\": \"carol@company.com\", \"category\": \"gambling\", \"description\": \"Casino night team building entertainment\", \"date\": \"2026-08-16\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "{\n  \"status\": \"REJECTED_POLICY_VIOLATION\",\n  \"violation_id\": \"VIO-EBB929E5\",\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\",\n  \"logged_at\": \"2026-08-18T12:34:04.543766+00:00\",\n  \"message\": \"\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\"\n}",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": {
+            "response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "Expense rejected for policy violation (status REJECTED_POLICY_VIOLATION): gambling is a prohibited category, so the submission is denied deterministically without any LLM call.",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null
+                }
+              ],
+              "role": "model"
+            }
+          },
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "policy_violation_prohibited_category",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": null,
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"status\": \"REJECTED_POLICY_VIOLATION\",\n  \"violation_id\": \"VIO-EBB929E5\",\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\",\n  \"logged_at\": \"2026-08-18T12:34:04.543766+00:00\",\n  \"message\": \"\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"amount\": 450.00, \"submitter\": \"dave@company.com\", \"category\": \"travel\", \"description\": \"Round-trip flight to the annual sales conference\", \"date\": \"2026-08-17\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "{\n  \"status\": \"PENDING_MANAGER_REVIEW\",\n  \"ticket_id\": \"TKT-73B44CF1\",\n  \"queued_at\": \"2026-08-18T12:34:08.048039+00:00\",\n  \"llm_evaluation\": {\n    \"summary\": \"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\n    \"risk_assessment\": \"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\n    \"recommended_action\": \"Approve\"\n  },\n  \"message\": \"\\ud83d\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\"\n}",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": {
+            "response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "Since the amount is $100 or more, the expense is not auto-approved. It is reviewed by the LLM compliance reviewer and then queued for human manager approval (status PENDING_MANAGER_REVIEW).",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null
+                }
+              ],
+              "role": "model"
+            }
+          },
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "high_value_routes_to_llm_review",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": null,
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"amount\": 450.0,\n  \"submitter\": \"dave@company.com\",\n  \"category\": \"travel\",\n  \"description\": \"Round-trip flight to the annual sales conference\",\n  \"date\": \"2026-08-17\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "llm_expense_reviewer",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\"summary\":\"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\"risk_assessment\":\"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\"recommended_action\":\"Approve\"}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"status\": \"PENDING_MANAGER_REVIEW\",\n  \"ticket_id\": \"TKT-73B44CF1\",\n  \"queued_at\": \"2026-08-18T12:34:08.048039+00:00\",\n  \"llm_evaluation\": {\n    \"summary\": \"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\n    \"risk_assessment\": \"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\n    \"recommended_action\": \"Approve\"\n  },\n  \"message\": \"\\ud83d\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        },
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"amount\": 60.00, \"submitter\": \"erin@company.com\", \"category\": \"training\", \"description\": \"Certification exam fee, SSN 123-45-6789 on file for HR verification\", \"date\": \"2026-08-17\"}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null,
+                "audio_transcription": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-26407DD5\",\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\",\n  \"processed_at\": \"2026-08-18T12:34:04.547271+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\"\n}",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null,
+                    "audio_transcription": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": {
+            "response": {
+              "parts": [
+                {
+                  "media_resolution": null,
+                  "code_execution_result": null,
+                  "executable_code": null,
+                  "file_data": null,
+                  "function_call": null,
+                  "function_response": null,
+                  "inline_data": null,
+                  "text": "Expense auto-approved (status APPROVED) for the $60.00 training certification fee. The SSN in the description must be redacted as [REDACTED_SSN] and the raw SSN 123-45-6789 must never appear in the response.",
+                  "thought": null,
+                  "thought_signature": null,
+                  "video_metadata": null,
+                  "tool_call": null,
+                  "tool_response": null,
+                  "part_metadata": null,
+                  "audio_transcription": null
+                }
+              ],
+              "role": "model"
+            }
+          },
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "pii_redaction_low_value",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": null,
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "ambient_expense_workflow",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-26407DD5\",\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\",\n  \"processed_at\": \"2026-08-18T12:34:04.547271+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\"\n}",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null,
+                          "audio_transcription": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        }
+      ],
+      "eval_dataset_df": null,
+      "candidate_name": null
+    }
+  ],
+  "metadata": {
+    "candidate_names": [
+      "candidate_1"
+    ],
+    "dataset_name": null,
+    "dataset_id": null,
+    "creation_timestamp": "2026-08-18T12:36:12.123035Z",
+    "dataset": [
+      {
+        "prompt_display_text": "{\"amount\": 45.00, \"submitter\": \"alice@company.com\", \"category\": \"meals\", \"description\": \"Team lunch with client during Q3 planning\", \"date\": \"2026-08-15\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"amount\\\": 45.00, \\\"submitter\\\": \\\"alice@company.com\\\", \\\"category\\\": \\\"meals\\\", \\\"description\\\": \\\"Team lunch with client during Q3 planning\\\", \\\"date\\\": \\\"2026-08-15\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "Expense auto-approved (status APPROVED): $45.00 meals expense for Team lunch with client during Q3 planning, no LLM call required since it is under the $100 auto-approve threshold and in an allowed category.",
+        "reference_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense auto-approved (status APPROVED): $45.00 meals expense for Team lunch with client during Q3 planning, no LLM call required since it is under the $100 auto-approve threshold and in an allowed category.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "response_display_text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-86119098\",\n  \"amount\": 45.0,\n  \"submitter\": \"alice@company.com\",\n  \"category\": \"meals\",\n  \"description\": \"Team lunch with client during Q3 planning\",\n  \"date\": \"2026-08-15\",\n  \"processed_at\": \"2026-08-18T12:33:58.678208+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\"\n}",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\n  \\\"status\\\": \\\"APPROVED\\\",\\n  \\\"approval_id\\\": \\\"APV-86119098\\\",\\n  \\\"amount\\\": 45.0,\\n  \\\"submitter\\\": \\\"alice@company.com\\\",\\n  \\\"category\\\": \\\"meals\\\",\\n  \\\"description\\\": \\\"Team lunch with client during Q3 planning\\\",\\n  \\\"date\\\": \\\"2026-08-15\\\",\\n  \\\"processed_at\\\": \\\"2026-08-18T12:33:58.678208+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\\\"\\n}\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"amount\\\": 45.0,\\n  \\\"submitter\\\": \\\"alice@company.com\\\",\\n  \\\"category\\\": \\\"meals\\\",\\n  \\\"description\\\": \\\"Team lunch with client during Q3 planning\\\",\\n  \\\"date\\\": \\\"2026-08-15\\\"\\n}\"}], \"role\": \"model\"}}, {\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"status\\\": \\\"APPROVED\\\",\\n  \\\"approval_id\\\": \\\"APV-86119098\\\",\\n  \\\"amount\\\": 45.0,\\n  \\\"submitter\\\": \\\"alice@company.com\\\",\\n  \\\"category\\\": \\\"meals\\\",\\n  \\\"description\\\": \\\"Team lunch with client during Q3 planning\\\",\\n  \\\"date\\\": \\\"2026-08-15\\\",\\n  \\\"processed_at\\\": \\\"2026-08-18T12:33:58.678208+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u2705 [AUTO-APPROVED] Expense of $45.00 auto-approved with no LLM call required.\\\"\\n}\"}], \"role\": \"model\"}}]}]}"
+      },
+      {
+        "prompt_display_text": "{\"amount\": 30.00, \"submitter\": \"bob@company.com\", \"category\": \"office_supplies\", \"description\": \"Printer paper and toner for the finance team\", \"date\": \"2026-08-16\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"amount\\\": 30.00, \\\"submitter\\\": \\\"bob@company.com\\\", \\\"category\\\": \\\"office_supplies\\\", \\\"description\\\": \\\"Printer paper and toner for the finance team\\\", \\\"date\\\": \\\"2026-08-16\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "Expense auto-approved (status APPROVED): $30.00 office_supplies expense for printer paper and toner, under the $100 threshold in an allowed category.",
+        "reference_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense auto-approved (status APPROVED): $30.00 office_supplies expense for printer paper and toner, under the $100 threshold in an allowed category.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "response_display_text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-5F84E64C\",\n  \"amount\": 30.0,\n  \"submitter\": \"bob@company.com\",\n  \"category\": \"office_supplies\",\n  \"description\": \"Printer paper and toner for the finance team\",\n  \"date\": \"2026-08-16\",\n  \"processed_at\": \"2026-08-18T12:33:58.681116+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\"\n}",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\n  \\\"status\\\": \\\"APPROVED\\\",\\n  \\\"approval_id\\\": \\\"APV-5F84E64C\\\",\\n  \\\"amount\\\": 30.0,\\n  \\\"submitter\\\": \\\"bob@company.com\\\",\\n  \\\"category\\\": \\\"office_supplies\\\",\\n  \\\"description\\\": \\\"Printer paper and toner for the finance team\\\",\\n  \\\"date\\\": \\\"2026-08-16\\\",\\n  \\\"processed_at\\\": \\\"2026-08-18T12:33:58.681116+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\\\"\\n}\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"amount\\\": 30.0,\\n  \\\"submitter\\\": \\\"bob@company.com\\\",\\n  \\\"category\\\": \\\"office_supplies\\\",\\n  \\\"description\\\": \\\"Printer paper and toner for the finance team\\\",\\n  \\\"date\\\": \\\"2026-08-16\\\"\\n}\"}], \"role\": \"model\"}}, {\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"status\\\": \\\"APPROVED\\\",\\n  \\\"approval_id\\\": \\\"APV-5F84E64C\\\",\\n  \\\"amount\\\": 30.0,\\n  \\\"submitter\\\": \\\"bob@company.com\\\",\\n  \\\"category\\\": \\\"office_supplies\\\",\\n  \\\"description\\\": \\\"Printer paper and toner for the finance team\\\",\\n  \\\"date\\\": \\\"2026-08-16\\\",\\n  \\\"processed_at\\\": \\\"2026-08-18T12:33:58.681116+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u2705 [AUTO-APPROVED] Expense of $30.00 auto-approved with no LLM call required.\\\"\\n}\"}], \"role\": \"model\"}}]}]}"
+      },
+      {
+        "prompt_display_text": "{\"amount\": 75.00, \"submitter\": \"carol@company.com\", \"category\": \"gambling\", \"description\": \"Casino night team building entertainment\", \"date\": \"2026-08-16\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"amount\\\": 75.00, \\\"submitter\\\": \\\"carol@company.com\\\", \\\"category\\\": \\\"gambling\\\", \\\"description\\\": \\\"Casino night team building entertainment\\\", \\\"date\\\": \\\"2026-08-16\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "Expense rejected for policy violation (status REJECTED_POLICY_VIOLATION): gambling is a prohibited category, so the submission is denied deterministically without any LLM call.",
+        "reference_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense rejected for policy violation (status REJECTED_POLICY_VIOLATION): gambling is a prohibited category, so the submission is denied deterministically without any LLM call.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "response_display_text": "{\n  \"status\": \"REJECTED_POLICY_VIOLATION\",\n  \"violation_id\": \"VIO-EBB929E5\",\n  \"amount\": 75.0,\n  \"submitter\": \"carol@company.com\",\n  \"category\": \"gambling\",\n  \"description\": \"Casino night team building entertainment\",\n  \"date\": \"2026-08-16\",\n  \"logged_at\": \"2026-08-18T12:34:04.543766+00:00\",\n  \"message\": \"\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\"\n}",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\n  \\\"status\\\": \\\"REJECTED_POLICY_VIOLATION\\\",\\n  \\\"violation_id\\\": \\\"VIO-EBB929E5\\\",\\n  \\\"amount\\\": 75.0,\\n  \\\"submitter\\\": \\\"carol@company.com\\\",\\n  \\\"category\\\": \\\"gambling\\\",\\n  \\\"description\\\": \\\"Casino night team building entertainment\\\",\\n  \\\"date\\\": \\\"2026-08-16\\\",\\n  \\\"logged_at\\\": \\\"2026-08-18T12:34:04.543766+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\\\"\\n}\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"amount\\\": 75.0,\\n  \\\"submitter\\\": \\\"carol@company.com\\\",\\n  \\\"category\\\": \\\"gambling\\\",\\n  \\\"description\\\": \\\"Casino night team building entertainment\\\",\\n  \\\"date\\\": \\\"2026-08-16\\\"\\n}\"}], \"role\": \"model\"}}, {\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"status\\\": \\\"REJECTED_POLICY_VIOLATION\\\",\\n  \\\"violation_id\\\": \\\"VIO-EBB929E5\\\",\\n  \\\"amount\\\": 75.0,\\n  \\\"submitter\\\": \\\"carol@company.com\\\",\\n  \\\"category\\\": \\\"gambling\\\",\\n  \\\"description\\\": \\\"Casino night team building entertainment\\\",\\n  \\\"date\\\": \\\"2026-08-16\\\",\\n  \\\"logged_at\\\": \\\"2026-08-18T12:34:04.543766+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u274c [POLICY VIOLATION] Prohibited category 'gambling'. Submission rejected deterministically.\\\"\\n}\"}], \"role\": \"model\"}}]}]}"
+      },
+      {
+        "prompt_display_text": "{\"amount\": 450.00, \"submitter\": \"dave@company.com\", \"category\": \"travel\", \"description\": \"Round-trip flight to the annual sales conference\", \"date\": \"2026-08-17\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"amount\\\": 450.00, \\\"submitter\\\": \\\"dave@company.com\\\", \\\"category\\\": \\\"travel\\\", \\\"description\\\": \\\"Round-trip flight to the annual sales conference\\\", \\\"date\\\": \\\"2026-08-17\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "Since the amount is $100 or more, the expense is not auto-approved. It is reviewed by the LLM compliance reviewer and then queued for human manager approval (status PENDING_MANAGER_REVIEW).",
+        "reference_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Since the amount is $100 or more, the expense is not auto-approved. It is reviewed by the LLM compliance reviewer and then queued for human manager approval (status PENDING_MANAGER_REVIEW).\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "response_display_text": "{\n  \"status\": \"PENDING_MANAGER_REVIEW\",\n  \"ticket_id\": \"TKT-73B44CF1\",\n  \"queued_at\": \"2026-08-18T12:34:08.048039+00:00\",\n  \"llm_evaluation\": {\n    \"summary\": \"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\",\n    \"risk_assessment\": \"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\",\n    \"recommended_action\": \"Approve\"\n  },\n  \"message\": \"\\ud83d\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\"\n}",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\n  \\\"status\\\": \\\"PENDING_MANAGER_REVIEW\\\",\\n  \\\"ticket_id\\\": \\\"TKT-73B44CF1\\\",\\n  \\\"queued_at\\\": \\\"2026-08-18T12:34:08.048039+00:00\\\",\\n  \\\"llm_evaluation\\\": {\\n    \\\"summary\\\": \\\"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\\\",\\n    \\\"risk_assessment\\\": \\\"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\\\",\\n    \\\"recommended_action\\\": \\\"Approve\\\"\\n  },\\n  \\\"message\\\": \\\"\\\\ud83d\\\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\\\"\\n}\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"amount\\\": 450.0,\\n  \\\"submitter\\\": \\\"dave@company.com\\\",\\n  \\\"category\\\": \\\"travel\\\",\\n  \\\"description\\\": \\\"Round-trip flight to the annual sales conference\\\",\\n  \\\"date\\\": \\\"2026-08-17\\\"\\n}\"}], \"role\": \"model\"}}, {\"author\": \"llm_expense_reviewer\", \"content\": {\"parts\": [{\"text\": \"{\\\"summary\\\":\\\"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\\\",\\\"risk_assessment\\\":\\\"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\\\",\\\"recommended_action\\\":\\\"Approve\\\"}\"}], \"role\": \"model\"}}, {\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"status\\\": \\\"PENDING_MANAGER_REVIEW\\\",\\n  \\\"ticket_id\\\": \\\"TKT-73B44CF1\\\",\\n  \\\"queued_at\\\": \\\"2026-08-18T12:34:08.048039+00:00\\\",\\n  \\\"llm_evaluation\\\": {\\n    \\\"summary\\\": \\\"Evaluation of $450.00 travel expense submitted by dave@company.com for a round-trip flight to the annual sales conference on 2026-08-17.\\\",\\n    \\\"risk_assessment\\\": \\\"Low risk. The expense aligns with standard business travel policies for attending company sales conferences, and $450 is a reasonable fare for round-trip airfare.\\\",\\n    \\\"recommended_action\\\": \\\"Approve\\\"\\n  },\\n  \\\"message\\\": \\\"\\\\ud83d\\\\udccb [HUMAN APPROVAL REQUIRED] High-value expense ($100+) reviewed by LLM and successfully routed to manager queue.\\\"\\n}\"}], \"role\": \"model\"}}]}]}"
+      },
+      {
+        "prompt_display_text": "{\"amount\": 60.00, \"submitter\": \"erin@company.com\", \"category\": \"training\", \"description\": \"Certification exam fee, SSN 123-45-6789 on file for HR verification\", \"date\": \"2026-08-17\"}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"amount\\\": 60.00, \\\"submitter\\\": \\\"erin@company.com\\\", \\\"category\\\": \\\"training\\\", \\\"description\\\": \\\"Certification exam fee, SSN 123-45-6789 on file for HR verification\\\", \\\"date\\\": \\\"2026-08-17\\\"}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "Expense auto-approved (status APPROVED) for the $60.00 training certification fee. The SSN in the description must be redacted as [REDACTED_SSN] and the raw SSN 123-45-6789 must never appear in the response.",
+        "reference_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"Expense auto-approved (status APPROVED) for the $60.00 training certification fee. The SSN in the description must be redacted as [REDACTED_SSN] and the raw SSN 123-45-6789 must never appear in the response.\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "response_display_text": "{\n  \"status\": \"APPROVED\",\n  \"approval_id\": \"APV-26407DD5\",\n  \"amount\": 60.0,\n  \"submitter\": \"erin@company.com\",\n  \"category\": \"training\",\n  \"description\": \"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\",\n  \"date\": \"2026-08-17\",\n  \"processed_at\": \"2026-08-18T12:34:04.547271+00:00\",\n  \"message\": \"\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\"\n}",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\n  \\\"status\\\": \\\"APPROVED\\\",\\n  \\\"approval_id\\\": \\\"APV-26407DD5\\\",\\n  \\\"amount\\\": 60.0,\\n  \\\"submitter\\\": \\\"erin@company.com\\\",\\n  \\\"category\\\": \\\"training\\\",\\n  \\\"description\\\": \\\"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\\\",\\n  \\\"date\\\": \\\"2026-08-17\\\",\\n  \\\"processed_at\\\": \\\"2026-08-18T12:34:04.547271+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\\\"\\n}\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"amount\\\": 60.0,\\n  \\\"submitter\\\": \\\"erin@company.com\\\",\\n  \\\"category\\\": \\\"training\\\",\\n  \\\"description\\\": \\\"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\\\",\\n  \\\"date\\\": \\\"2026-08-17\\\"\\n}\"}], \"role\": \"model\"}}, {\"author\": \"ambient_expense_workflow\", \"content\": {\"parts\": [{\"text\": \"{\\n  \\\"status\\\": \\\"APPROVED\\\",\\n  \\\"approval_id\\\": \\\"APV-26407DD5\\\",\\n  \\\"amount\\\": 60.0,\\n  \\\"submitter\\\": \\\"erin@company.com\\\",\\n  \\\"category\\\": \\\"training\\\",\\n  \\\"description\\\": \\\"Certification exam fee, SSN [REDACTED_SSN] on file for HR verification\\\",\\n  \\\"date\\\": \\\"2026-08-17\\\",\\n  \\\"processed_at\\\": \\\"2026-08-18T12:34:04.547271+00:00\\\",\\n  \\\"message\\\": \\\"\\\\u2705 [AUTO-APPROVED] Expense of $60.00 auto-approved with no LLM call required.\\\"\\n}\"}], \"role\": \"model\"}}]}]}"
+      }
+    ]
+  },
+  "agent_info": null
+}
