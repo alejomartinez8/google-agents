@@ -17,5 +17,6 @@ Each subfolder is a self-contained agent project built while working through the
 | Project | Description |
 |---------|-------------|
 | [ambient-expense-agent](ambient-expense-agent/) | ReAct agent scaffolded with `agents-cli`; exposes a FastAPI backend and supports the A2A protocol. |
+| [winter-storm-triage](winter-storm-triage/) | Winter Storm Triage Agent built using ADK and a FastMCP server. Resolves shipping delays and issues automated compensations based on customer loyalty tiers, deployed to Vertex AI Agent Runtime. |
 
 Each project has its own `README.md` with setup, run, and deployment instructions specific to that agent.
