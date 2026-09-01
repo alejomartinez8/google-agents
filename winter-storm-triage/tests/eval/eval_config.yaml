@@ -1,13 +1,15 @@
 metrics_to_run:
-  - custom_response_quality
+  - multi_turn_tool_use_quality   # built-in: were get_order_status / get_customer_loyalty_info
+                                   # / issue_disruption_compensation called correctly, in a sound order?
+  - compensation_correctness      # deterministic: exact $ amount + shipping upgrade match the tier table
+  - custom_response_quality       # LLM judge: empathetic, clear, on-policy final reply
 
 custom_metrics:
+  # Deterministic — compares the actual issue_disruption_compensation call against
+  # the amount/shipping upgrade encoded in each case's `reference`. See compensation_correctness.py.
+  - name: compensation_correctness
+    custom_function_file: compensation_correctness.py
   # Default: local LLM-as-judge (see response_quality.py). Runs in-process via
   # google-genai on Agent Platform (ADC) or Google AI Studio (GEMINI_API_KEY).
   - name: custom_response_quality
     custom_function_file: response_quality.py
-  - name: agent_turn_count
-    custom_function: |
-      def evaluate(instance):
-          turns = (instance.get("agent_data") or {}).get("turns", [])
-          return {'score': len(turns)}

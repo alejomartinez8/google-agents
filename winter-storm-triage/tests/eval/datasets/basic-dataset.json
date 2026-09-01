@@ -1,29 +1,80 @@
 {
   "eval_cases": [
     {
-      "eval_case_id": "greeting",
+      "eval_case_id": "platinum_tier_storm_delay",
       "prompt": {
         "role": "user",
-        "parts": [{"text": "Hello, what can you help me with?"}]
-      }
-    },
-    {
-      "eval_case_id": "weather_query",
-      "prompt": {
-        "role": "user",
-        "parts": [{"text": "What's the weather like in San Francisco?"}]
-      }
-    },
-    {
-      "eval_case_id": "capital_lookup",
-      "prompt": {
-        "role": "user",
-        "parts": [{"text": "What is the capital of France?"}]
+        "parts": [{"text": "Hi, my order CYM-EC-1002 hasn't shown up yet. Can you look into it?"}]
       },
       "reference": {
         "response": {
           "role": "model",
-          "parts": [{"text": "The capital of France is Paris."}]
+          "parts": [{"text": "The order is delayed by the winter storm. As a Platinum tier customer, issue a $100 credit and a Next-Day Air shipping upgrade, then apologize and explain the delay."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "gold_tier_storm_delay",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "My order CYM-EC-9921 was supposed to arrive already. What happened?"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "The order is delayed by the winter storm. As a Gold tier customer, issue a $50 credit and a Next-Day Air shipping upgrade, then apologize and explain the delay."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "silver_tier_storm_delay",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Can you check on order CYM-EC-1003 for me? It's late."}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "The order is delayed by the winter storm. As a Silver tier customer, issue a $25 credit and a 3-Day Select shipping upgrade, then apologize and explain the delay."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "member_tier_storm_delay",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Order CYM-EC-1004 is late, what's going on and what can you do about it?"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "The order is delayed by the winter storm. As a Member tier customer, issue a $10 credit and a Priority Shipping upgrade, then apologize and explain the delay."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "delivered_order_no_compensation",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "I want to check the status of order CYM-EC-1001, is it delayed?"}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "No compensation should be issued: the order has already been delivered and was not delayed by the storm, so it does not qualify under the disruption compensation policy."}]
+        }
+      }
+    },
+    {
+      "eval_case_id": "unknown_order_no_compensation",
+      "prompt": {
+        "role": "user",
+        "parts": [{"text": "Can you check my order CYM-EC-9999? I think it's stuck somewhere."}]
+      },
+      "reference": {
+        "response": {
+          "role": "model",
+          "parts": [{"text": "No compensation should be issued: the order was not found in the system, so the agent must say so and must not fabricate order details or issue compensation."}]
         }
       }
     }
