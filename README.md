@@ -18,5 +18,6 @@ Each subfolder is a self-contained agent project built while working through the
 |---------|-------------|
 | [ambient-expense-agent](ambient-expense-agent/) | ReAct agent scaffolded with `agents-cli`; exposes a FastAPI backend and supports the A2A protocol. |
 | [winter-storm-triage](winter-storm-triage/) | Winter Storm Triage Agent built using ADK and a FastMCP server. Resolves shipping delays and issues automated compensations based on customer loyalty tiers, deployed to Vertex AI Agent Runtime. |
+| [adk_challenge_lab](adk_challenge_lab/) | Multi-agent paint shopping assistant for Cymbal Shops, with a root agent delegating to `search_agent` and `room_planner` (which itself delegates to a `coverage_calculator` sub-agent), deployed to Vertex AI Agent Engine and fronted by a Chainlit UI. |
 
 Each project has its own `README.md` with setup, run, and deployment instructions specific to that agent.
