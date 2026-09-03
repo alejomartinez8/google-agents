@@ -63,8 +63,8 @@ registry = AgentRegistry(project_id=PROJECT_ID, location=MCP_SERVER_LOCATION)
 
 # --- Root Coordinator Agent ---
 # Entry point of the graph. Its only job is to turn a raw, possibly messy
-# incident report into a normalized `clean_query` string that every other
-# agent downstream references via `{clean_query}` — ADK's session-state
+# incident report into a normalized `triage_summary` string that every other
+# agent downstream references via `{triage_summary}` — ADK's session-state
 # templating: `{key}` inside an instruction string is substituted with
 # the state value stored under that key before the prompt reaches the
 # model, with no manual wiring required.
@@ -86,7 +86,7 @@ coordinator = Agent(
 
     Provide a clean, focused search query containing these key terms.
     """,
-    output_key="clean_query",
+    output_key="triage_summary",
 )
 
 
@@ -132,7 +132,7 @@ search_vais_agent = Agent(
     model=MODEL,
     instruction="""
     You are the Internal Documentation Searcher.
-    Search the internal documentation using your Vertex AI Search tool for details matching the incident query: {clean_query}
+    Search the internal documentation using your Vertex AI Search tool for details matching the following incident triage summary: {triage_summary}
 
     Output a clear list of matching pages, errors, or troubleshooting procedures you find.
     """,
@@ -181,7 +181,7 @@ google_search = GoogleSearchTool(bypass_multi_tools_limit=True)
 
 
 # Queries the public web. Carries `before_tool_callback=validate_tool_params`
-# because the search text (built from {clean_query}, which traces back to
+# because the search text (built from {triage_summary}, which traces back to
 # the user's original report) could contain secrets pasted in by accident
 # — this callback is the last checkpoint before that text leaves the org
 # via an external search call.
@@ -198,7 +198,7 @@ web_search_agent = Agent(
     instruction="""
     You are the Web Search Agent.
     Your task is to search public developer sources (e.g. GitHub issues, StackOverflow, official documentation) using Google Search.
-    Search for details about the following incident query: {clean_query}
+    Search for details about the following incident triage summary: {triage_summary}
 
     Provide a clear summary of public patched workarounds or documentation.
     """,
@@ -229,7 +229,7 @@ mcp_kb_agent = Agent(
     model=MODEL,
     instruction="""
     You are the Internal Knowledge Agent.
-    Your task is to query the Developer KB MCP toolset for any internal developer documentation, guidelines, runbooks, or known incident reports matching this query: {clean_query}
+    Your task is to query the Developer KB MCP toolset for any internal developer documentation, guidelines, runbooks, or known incident reports matching this incident triage summary: {triage_summary}
 
     Provide a clear summary of internal findings.
     """,

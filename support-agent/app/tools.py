@@ -44,7 +44,7 @@ async def validate_tool_params(
   KNOWN LIMITATION (confirmed in practice, left unresolved on purpose):
   this only sees the arguments as generated for *this* tool call. In this
   workflow, `coordinator` reformulates the user's raw incident report
-  into `clean_query` first, and the calling agent (web_search_agent /
+  into `triage_summary` first, and the calling agent (web_search_agent /
   mcp_kb_agent) can reformulate it again when deciding what to actually
   search for. Either rewrite can legitimately drop a trigger keyword with
   no intent to evade the filter — so a query containing e.g.
@@ -87,7 +87,7 @@ async def validate_tool_params(
   return None
 
 
-def find_similar_bugs(clean_query: str) -> str:
+def find_similar_bugs(triage_summary: str) -> str:
   """Performs a semantic search in the BigQuery bug database to find bugs.
 
   Called from the `query_bq` workflow node in agent.py — a plain function
@@ -100,7 +100,7 @@ def find_similar_bugs(clean_query: str) -> str:
   returning the top-3 closest matches by cosine distance.
 
   Args:
-    clean_query: The description of the new bug to search for.
+    triage_summary: The description of the new bug to search for.
 
   Returns:
     A formatted string of the top 3 most similar bugs found, or a message
@@ -114,7 +114,7 @@ def find_similar_bugs(clean_query: str) -> str:
 
   print(
       "TOOL: Received search query for BigQuery vector search:"
-      f" '{clean_query}'"
+      f" '{triage_summary}'"
   )
 
   try:
@@ -126,7 +126,7 @@ def find_similar_bugs(clean_query: str) -> str:
 
     response = client.models.embed_content(
         model="text-embedding-004",
-        contents=clean_query
+        contents=triage_summary
     )
 
     query_embedding = response.embeddings[0].values
