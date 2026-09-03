@@ -37,6 +37,8 @@ The `Join Node` is a synchronization barrier: it waits for all 3 branches to fin
 
 **Note:** this code needs its own GCP infrastructure to actually run (an Agent Search datastore with your own runbooks, a BigQuery table with post-mortems + embeddings, access to the MCP server registered in Agent Registry) — it won't work "out of the box" outside the original Qwiklabs environment it was built in. See `.env.example` for the required variables.
 
+**On mixing search tools with other tools:** `search_vais_agent`/`web_search_agent` avoid Agent Platform's "search tool can't share an agent with non-search tools" restriction via `bypass_multi_tools_limit=True` on the tool itself (see `agent.py`). [`adk_challenge_lab`](../adk_challenge_lab/) hits the same restriction and solves it differently — by isolating the search agent behind an `AgentTool()` instead — worth comparing the two approaches.
+
 ## Project Structure
 
 ```
