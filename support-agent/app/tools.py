@@ -1,4 +1,13 @@
-"""Tools for multiagent systems support agent."""
+"""Tools for the multiagent systems support agent.
+
+Two independent pieces, both used from app/agent.py:
+  - validate_tool_params: a `before_tool_callback` security guardrail,
+    wired onto the agents whose tools reach outside the org (web search,
+    MCP knowledge base).
+  - find_similar_bugs: the plain Python function behind the `query_bq`
+    workflow node — a BigQuery vector search over past incident
+    post-mortems.
+"""
 
 import os
 
@@ -20,6 +29,29 @@ async def validate_tool_params(
   """Callback hook that acts as a security guardrail before any tool executes.
 
   Blocks queries that might contain sensitive developer secrets or credentials.
+
+  Wiring: bound via `before_tool_callback=validate_tool_params` on any
+  Agent whose tools can send data outside the org — see web_search_agent
+  and mcp_kb_agent in agent.py. Deliberately NOT bound on
+  search_vais_agent, which only queries the internal datastore and has
+  nothing to leak outward.
+
+  What it actually checks: `str(args).lower()` serializes the *entire*
+  arguments dict (values included, not just keys) into one string before
+  the substring check runs — so it does catch a keyword buried inside a
+  query string, not just a literal dict key named e.g. "password".
+
+  KNOWN LIMITATION (confirmed in practice, left unresolved on purpose):
+  this only sees the arguments as generated for *this* tool call. In this
+  workflow, `coordinator` reformulates the user's raw incident report
+  into `clean_query` first, and the calling agent (web_search_agent /
+  mcp_kb_agent) can reformulate it again when deciding what to actually
+  search for. Either rewrite can legitimately drop a trigger keyword with
+  no intent to evade the filter — so a query containing e.g.
+  "client_secret" is not guaranteed to still say so by the time it
+  reaches here. Treat this as a best-effort net, not a hard guarantee; a
+  stricter implementation would also need to check the original user
+  input before any agent gets a chance to rephrase it.
 
   Args:
     tool: The tool instance being called.
@@ -58,6 +90,15 @@ async def validate_tool_params(
 def find_similar_bugs(clean_query: str) -> str:
   """Performs a semantic search in the BigQuery bug database to find bugs.
 
+  Called from the `query_bq` workflow node in agent.py — a plain function
+  node, not an LLM agent, since this retrieval is fully deterministic and
+  doesn't need a model decision to run.
+
+  Flow: embed the query with `text-embedding-004`, then run a BigQuery
+  `VECTOR_SEARCH` against a table whose rows already have their
+  description pre-embedded into a `description_embedding` column,
+  returning the top-3 closest matches by cosine distance.
+
   Args:
     clean_query: The description of the new bug to search for.
 
@@ -90,12 +131,19 @@ def find_similar_bugs(clean_query: str) -> str:
 
     query_embedding = response.embeddings[0].values
   except Exception as e:
+    # Degrade gracefully instead of raising: a transient embedding-service
+    # outage shouldn't crash the whole graph — the other branches
+    # (internal Agent Search, web, MCP) can still produce a usable answer
+    # even if this one can't.
     return (
         "[System Notice: The Text Embedding Service is temporarily unavailable."
         " Unable to calculate query embeddings. Please proceed using other"
         " available documentation channels only.]"
     )
 
+  # VECTOR_SEARCH does the nearest-neighbor lookup natively in BigQuery;
+  # the query embedding is passed as a query parameter (not interpolated
+  # into the SQL string) to avoid building a huge literal array inline.
   sql_query = f"""
   SELECT
     base.title,
@@ -125,6 +173,7 @@ def find_similar_bugs(clean_query: str) -> str:
     query_job = bq_client.query(sql_query, job_config=job_config)
     results = query_job.result()
   except Exception as e:
+    # Same graceful-degradation reasoning as the embedding call above.
     return (
         "[System Notice: The BigQuery similar bugs search database is"
         " temporarily offline or inaccessible. Please proceed using other"
