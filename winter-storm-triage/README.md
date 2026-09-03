@@ -15,7 +15,7 @@ flowchart LR
     mcp --- t3[issue_disruption_compensation]
 ```
 
-The simplest architecture in this repo so far: one `Agent`, no sub-agents, no graph. `McpToolset` + `StdioConnectionParams` spawns `cymbal_direct_mcp.py` as a local subprocess and talks to it over stdio — no external database, the "logistics system" is just in-memory Python dicts (5 orders, 5 customers spanning all 4 loyalty tiers, plus one already-delivered order as a negative case).
+The simplest architecture of the four projects in this repo: one `Agent`, no sub-agents, no graph — contrast with [`ambient-expense-agent`](../ambient-expense-agent/)'s conditional-routing `Workflow` (deterministic auto-approve/policy-violation/LLM-review branches) or [`support-agent`](../support-agent/)'s fan-out/join graph. `McpToolset` + `StdioConnectionParams` spawns `cymbal_direct_mcp.py` as a local subprocess and talks to it over stdio — no external database, the "logistics system" is just in-memory Python dicts (5 orders, 5 customers spanning all 4 loyalty tiers, plus one already-delivered order as a negative case).
 
 ## Compensation policy
 
