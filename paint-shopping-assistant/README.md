@@ -41,18 +41,6 @@ tools=[
 
 This is the same platform restriction documented in [`support-agent`](../support-agent/) (see its README and `agent.py`), solved a different way there (`bypass_multi_tools_limit=True` on the search tool itself, instead of isolating it via `AgentTool`) — worth knowing both patterns.
 
-## Known issue found and fixed (2026-09-03): `set_session_value` never persisted state
-
-The lab's Task 4 asks you to make `set_session_value` store `key`/`value` pairs in `tool_context.state`, so `room_planner_agent` and `coverage_calculator_agent` can later read them back via ADK's key templating (`{SELECTED_PAINT?}`, `{coverage_rate?}`, `{price?}`). The version left after completing the lab only implemented the *status message* half of that:
-
-```python
-async def set_session_value(tool_context: ToolContext, key: str, value: str):
-    """Sets a value in the tool_context's state dictionary."""
-    return f"stored '{value}' in '{key}'"
-```
-
-It reports success but never actually writes to state (`tool_context.state[key] = value` was missing) — so `{SELECTED_PAINT?}`, `{coverage_rate?}`, `{price?}` most likely stayed empty throughout the original run, even though the conversation looked coherent (the `?` in key templating means "don't crash if missing," not "warn if missing"). Fixed here to actually persist the value.
-
 ## Deployment
 
 ```bash
