@@ -15,7 +15,7 @@ flowchart LR
     mcp --- t3[issue_disruption_compensation]
 ```
 
-The simplest of the three projects in this repo: one `Agent`, no sub-agents, no graph. `McpToolset` + `StdioConnectionParams` spawns `cymbal_direct_mcp.py` as a local subprocess and talks to it over stdio — no external database, the "logistics system" is just in-memory Python dicts (5 orders, 5 customers spanning all 4 loyalty tiers, plus one already-delivered order as a negative case).
+The simplest architecture in this repo so far: one `Agent`, no sub-agents, no graph. `McpToolset` + `StdioConnectionParams` spawns `cymbal_direct_mcp.py` as a local subprocess and talks to it over stdio — no external database, the "logistics system" is just in-memory Python dicts (5 orders, 5 customers spanning all 4 loyalty tiers, plus one already-delivered order as a negative case).
 
 ## Compensation policy
 
@@ -32,7 +32,7 @@ Flow per inquiry: `get_order_status` (finds the order + `customer_id`) → `get_
 
 ## Built via Antigravity, not by hand
 
-Unlike the other two projects, most of this one was built by prompting the **Antigravity CLI (`agy`)** in natural language rather than writing code directly — that's the actual skill GENAI144 tests. Roughly, in order:
+Unlike [`support-agent`](../support-agent/) and [`paint-shopping-assistant`](../paint-shopping-assistant/), most of this one was built by prompting the **Antigravity CLI (`agy`)** in natural language rather than writing code directly — that's the actual skill GENAI144 tests. Roughly, in order:
 
 1. **Register the MCP server** — a `.agents/mcp_config.json` pointing `agy` at the local `cymbal_direct_mcp.py` script (this is a separate, earlier wiring than the `McpToolset`/`StdioConnectionParams` that ends up in `app/agent.py` — the config file is how `agy` itself talks to the MCP server during the chat session, before anything gets scaffolded into a deployable agent).
 2. **Author the workspace rule and the skill**, by asking `agy` directly:
@@ -60,6 +60,6 @@ agents-cli deploy
 
 ## Notes
 
-- **Runs more standalone than the other two projects in this repo** — no BigQuery table or Agent Search datastore to provision, since the "logistics system" is in-memory mock data inside `cymbal_direct_mcp.py` itself. You still need a GCP project (or a Gemini API key) for the model calls themselves — see `.env.example`.
+- **Runs more standalone than `support-agent`/`paint-shopping-assistant`** — no BigQuery table or Agent Search datastore to provision, since the "logistics system" is in-memory mock data inside `cymbal_direct_mcp.py` itself. You still need a GCP project (or a Gemini API key) for the model calls themselves — see `.env.example`.
 - `summary_task2.md` through `summary_task5.md` are the grading artifacts Antigravity generated during the lab (per-task summaries requested by the manual for automated scoring) — kept here as a real record of what the agent actually produced, not just what the manual claims it should produce.
 - `GEMINI.md` in this repo is the generic `agents-cli` scaffold guide (development phases, commands), not the project-specific rules file from step 2 above — that one lived at the workspace root during the lab (`~/genai144-challenge/GEMINI.md`) and wasn't carried over when the scaffolded `winter-storm-triage/` subfolder was copied into this repo.
