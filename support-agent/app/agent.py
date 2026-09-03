@@ -111,8 +111,8 @@ def query_bq(ctx: Context, node_input: Any) -> Event:
 # agent only ever carries the one search tool, the flag alone is enough —
 # no isolation trick needed. Contrast with mixing a search tool alongside
 # non-search tools on the *same* agent, where the fix instead is to wrap
-# the search tool as its own `AgentTool()` (see adk_challenge_lab/ in
-# this repo for that pattern).
+# the search tool as its own `AgentTool()` (see paint-shopping-assistant/
+# in this repo for that pattern).
 vais_tool = VertexAiSearchTool(
     data_store_id=(
         f"projects/{PROJECT_ID}/locations/{DATASTORE_LOCATION}/collections/"

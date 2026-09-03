@@ -1,6 +1,6 @@
-# adk_challenge_lab — Cymbal Shops Paint Shopping Assistant
+# paint-shopping-assistant
 
-Multi-agent ADK assistant that helps a customer shop for paint: browse Cymbal Shops' paint products (grounded in a real product datasheet via Agent Search), pick a room and color, estimate how much paint is needed from room dimensions, and calculate the total price.
+Multi-agent ADK assistant for Cymbal Shops' paint department: browse paint products (grounded in a real product datasheet via Agent Search), pick a room and color, estimate how much paint is needed from room dimensions, and calculate the total price.
 
 Based on Google Cloud Skills Challenge Lab **GENAI129** — "Deploy an Agent with Agent Development Kit (ADK)" (80%+ required to pass), part of the [Build and Deploy Agents with Agent Development Kit (ADK)](https://partner.skills.google/paths/4144) path. Related learning labs referenced by the lab manual: [Get started with ADK](https://partner.skills.google/catalog_lab/32017), [Empower ADK agents with tools](https://partner.skills.google/catalog_lab/32018), [Build multi-agent systems with ADK](https://partner.skills.google/catalog_lab/32044), [Deploy ADK agents to Agent Runtime](https://partner.skills.google/catalog_lab/32019), [Build Agent Search Apps using AI Applications](https://partner.skills.google/catalog_lab/6725).
 
@@ -56,7 +56,7 @@ It reports success but never actually writes to state (`tool_context.state[key] 
 ## Deployment
 
 ```bash
-cd adk_challenge_lab
+cd paint-shopping-assistant
 adk deploy agent_engine --display_name "Paint Agent" .
 ```
 

@@ -18,7 +18,7 @@ Each subfolder is a self-contained agent project built while working through the
 |---------|-------------|
 | [ambient-expense-agent](ambient-expense-agent/) | ReAct agent scaffolded with `agents-cli`; exposes a FastAPI backend and supports the A2A protocol. |
 | [winter-storm-triage](winter-storm-triage/) | Winter Storm Triage Agent built using ADK and a FastMCP server. Resolves shipping delays and issues automated compensations based on customer loyalty tiers, deployed to Vertex AI Agent Runtime. |
-| [adk_challenge_lab](adk_challenge_lab/) | Cymbal Shops Paint Shopping Assistant — root `paint_agent` uses `search_agent` as an `AgentTool` (isolated from its other tools due to Agent Platform's search-tool restriction) and transfers to `room_planner_agent` → `coverage_calculator_agent` for room sizing and pricing. Deployed to Vertex AI Agent Engine and fronted by a Chainlit UI. |
+| [paint-shopping-assistant](paint-shopping-assistant/) | Cymbal Shops Paint Shopping Assistant — root `paint_agent` uses `search_agent` as an `AgentTool` (isolated from its other tools due to Agent Platform's search-tool restriction) and transfers to `room_planner_agent` → `coverage_calculator_agent` for room sizing and pricing. Deployed to Vertex AI Agent Engine and fronted by a Chainlit UI. |
 | [support-agent](support-agent/) | DevSecOps Incident Triage System — ADK 2.0 Graph Workflow that fans out to BigQuery vector search, an internal Agent Search datastore, and external web/MCP search, then synthesizes a grounding-prioritized recommendation via a `JoinNode`. Deployed to Agent Runtime and registered in Gemini Enterprise. |
 
 Each project has its own `README.md` with setup, run, and deployment instructions specific to that agent.
