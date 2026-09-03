@@ -2,7 +2,7 @@
 
 Cymbal Direct Winter Storm Triage Agent — a single ADK agent that triages customer orders delayed by a severe winter storm: looks up the order and the customer's loyalty tier via a mock logistics MCP server, applies a tier-based compensation policy, issues the credit + shipping upgrade, and drafts an empathetic customer response.
 
-Based on Google Cloud Skills Challenge Lab **GENAI144** — "Accelerate Development with Antigravity", part of the [Use Agents to Build Agents](https://partner.skills.google/paths/3476) path (a different path than [`support-agent`](../support-agent/) and [`paint-shopping-assistant`](../paint-shopping-assistant/) in this repo, both from "Build and Deploy Agents with ADK").
+Based on Google Cloud Skills Challenge Lab **GENAI144** — "Accelerate Development with Antigravity", part of the [Use Agents to Build Agents](https://partner.skills.google/paths/3476) path.
 
 ## Architecture
 
