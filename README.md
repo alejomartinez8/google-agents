@@ -53,7 +53,14 @@ Cymbal Analytics Portfolio Analyst — lab **GENAI163**, from course 2 ("Build E
 - Execute multi-step Python code in a sandbox and retrieve stdout and file outputs.
 - Build an ADK agent with Code Execution and interact with it via `adk web`.
 
-*(Course 3, "Craft ADK Agents with Persistent Memories", not started yet — no project here until it's underway.)*
+#### [seo_skills_agent](seo_skills_agent/)
+Blog Writing & SEO Skill Assistant — lab **GENAI154**, "Use Skills with ADK Agents", from course 3 ("Craft ADK Agents with Persistent Memories").
+
+- Load and register directory-based and inline ADK `Skill` definitions using `SkillToolset`.
+- Define domain instructions, checklists, and style guidelines using the Agent Skills specification (`SKILL.md`).
+- Expose supplementary reference files dynamically to the LLM via `load_skill_resource`.
+- Utilize `skill-creator` to autonomously generate complete, spec-compliant `SKILL.md` skill definitions.
+
 
 #### [multi-agent-transfer-chain](multi-agent-transfer-chain/)
 Paint Shopping Assistant — Challenge Lab **GENAI129**, "Deploy an Agent with Agent Development Kit (ADK)", closing out Path 2.
