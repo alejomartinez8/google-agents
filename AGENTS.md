@@ -1,11 +1,6 @@
----
-trigger: always_on
-always_on: true
----
-
 # google-agents Workspace Rules & Best Practices
 
-This document defines the rules, standards, and development guidelines for all agent-based projects in this workspace. These rules are configured as **always_on** and must be strictly followed by all development agents and contributors.
+This document defines the rules, standards, and development guidelines for all agent-based projects in this workspace. These rules apply to every coding agent or assistant working in this repo (Claude Code, Gemini CLI, Antigravity, Cursor, or any other) and must be strictly followed.
 
 ---
 
