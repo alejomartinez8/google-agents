@@ -1,4 +1,4 @@
-# agent_platform_sandbox — Cymbal Analytics Portfolio Analyst
+# code-execution-sandbox — Cymbal Analytics Portfolio Analyst
 
 Demonstrates Gemini Enterprise Agent Platform's **Code Execution** feature: a secure, isolated sandbox (no outbound network, no host access, 125+ pre-loaded packages including NumPy/Pandas/Matplotlib) that runs Python code on demand and persists state across calls. A hedge fund's portfolio-analysis workflow — daily returns, annualized volatility, Sharpe ratio, a performance chart — is run first via direct SDK calls, then via an ADK agent that generates and executes the same kind of code autonomously from natural-language prompts, against the *same* sandbox.
 
@@ -53,7 +53,7 @@ And, as a smoke test unrelated to the portfolio data, `cymbal_analyst` was asked
 ## Setup
 
 ```bash
-cd agent_platform_sandbox
+cd code-execution-sandbox
 python3 -m pip install -r requirements.txt
 ```
 
