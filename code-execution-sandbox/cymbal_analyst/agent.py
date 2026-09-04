@@ -59,7 +59,7 @@ root_agent = LlmAgent(
     # at the sandbox created by the notebook, not a new one — see the
     # sandbox_resource_name check above. For agents that need declared
     # *tools* alongside search grounding instead, see the multi-tools-limit
-    # workaround documented in ../paint-shopping-assistant/README.md.
+    # workaround documented in ../multi-agent-transfer-chain/README.md.
     code_executor=AgentEngineSandboxCodeExecutor(
         sandbox_resource_name=sandbox_resource_name,
     ),

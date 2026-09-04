@@ -1,4 +1,4 @@
-# paint-shopping-assistant
+# multi-agent-transfer-chain
 
 Multi-agent ADK assistant for Cymbal Shops' paint department: browse paint products (grounded in a real product datasheet via Agent Search), pick a room and color, estimate how much paint is needed from room dimensions, and calculate the total price.
 
@@ -39,12 +39,12 @@ tools=[
 ],
 ```
 
-This is the same platform restriction documented in [`support-agent`](../support-agent/) (see its README and `agent.py`), solved a different way there (`bypass_multi_tools_limit=True` on the search tool itself, instead of isolating it via `AgentTool`) — worth knowing both patterns.
+This is the same platform restriction documented in [`graph-workflow-fanout`](../graph-workflow-fanout/) (see its README and `agent.py`), solved a different way there (`bypass_multi_tools_limit=True` on the search tool itself, instead of isolating it via `AgentTool`) — worth knowing both patterns.
 
 ## Deployment
 
 ```bash
-cd paint-shopping-assistant
+cd multi-agent-transfer-chain
 adk deploy agent_engine --display_name "Paint Agent" .
 ```
 

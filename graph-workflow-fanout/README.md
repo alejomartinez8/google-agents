@@ -1,4 +1,4 @@
-# support-agent — DevSecOps Incident Triage System
+# graph-workflow-fanout — DevSecOps Incident Triage System
 
 Multi-agent system built with ADK 2.0 (Graph Workflow API) that triages production incidents: given an error report, it searches in parallel across 3 sources (past bug history in BigQuery via vector search, internal runbooks indexed in Agent Search/Vertex AI Search, and external developer documentation via MCP + Google Search), then synthesizes a recommendation that always prioritizes internal knowledge over external.
 
@@ -37,12 +37,12 @@ The `Join Node` is a synchronization barrier: it waits for all 3 branches to fin
 
 **Note:** this code needs its own GCP infrastructure to actually run (an Agent Search datastore with your own runbooks, a BigQuery table with post-mortems + embeddings, access to the MCP server registered in Agent Registry) — it won't work "out of the box" outside the original Qwiklabs environment it was built in. See `.env.example` for the required variables.
 
-**On mixing search tools with other tools:** `search_vais_agent`/`web_search_agent` avoid Agent Platform's "search tool can't share an agent with non-search tools" restriction via `bypass_multi_tools_limit=True` on the tool itself (see `agent.py`). [`paint-shopping-assistant`](../paint-shopping-assistant/) hits the same restriction and solves it differently — by isolating the search agent behind an `AgentTool()` instead — worth comparing the two approaches.
+**On mixing search tools with other tools:** `search_vais_agent`/`web_search_agent` avoid Agent Platform's "search tool can't share an agent with non-search tools" restriction via `bypass_multi_tools_limit=True` on the tool itself (see `agent.py`). [`multi-agent-transfer-chain`](../multi-agent-transfer-chain/) hits the same restriction and solves it differently — by isolating the search agent behind an `AgentTool()` instead — worth comparing the two approaches.
 
 ## Project Structure
 
 ```
-support-agent/
+graph-workflow-fanout/
 ├── app/         # Core agent code
 │   ├── agent.py               # Main agent logic
 │   ├── fast_api_app.py        # FastAPI Backend server

@@ -1,4 +1,4 @@
-# ambient-expense-agent
+# graph-workflow-routing
 
 An event-driven expense approval agent: it doesn't chat, it processes an incoming expense report and returns a decision. Built with ADK 2.0's Graph Workflow API to demonstrate conditional routing — most reports never touch the LLM at all.
 
@@ -36,7 +36,7 @@ Every path produces a status (`APPROVED`, `REJECTED_POLICY_VIOLATION`, or `PENDI
 ## Deployment
 
 ```bash
-cd ambient-expense-agent
+cd graph-workflow-routing
 agents-cli deploy
 ```
 
