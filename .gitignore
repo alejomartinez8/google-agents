@@ -5,3 +5,7 @@ __pycache__/
 *.py[cod]
 .venv/
 .adk/
+
+# Artifacts and evaluation run results
+artifacts/
+**/artifacts/
