@@ -1,8 +1,8 @@
 # google-agents
 
-Learning repo for the **Gemini Enterprise Agent Development Certified Partner Specialist** certification ([Partner Learning program](https://rsvp.withgoogle.com/events/partner-learning/cps)), covering both the [**"Use Agents to Build Agents"**](https://partner.skills.google/paths/3476) and [**"Build and Deploy Agents with Agent Development Kit (ADK)"**](https://partner.skills.google/paths/4144) paths.
+Learning repo for the **Gemini Enterprise Agent Development Certified Partner Specialist** certification ([Partner Learning program](https://rsvp.withgoogle.com/events/partner-learning/cps)), earned by completing 3 learning paths — [Use Agents to Build Agents](https://partner.skills.google/paths/3476), [Build and Deploy Agents with Agent Development Kit (ADK)](https://partner.skills.google/paths/4144), and [Agent Evaluation and Hill Climbing](https://partner.skills.google/paths/4306) — each closed by its own challenge lab. No separate exam or cost beyond the labs themselves.
 
-Each subfolder is a self-contained agent project built while working through the path's labs and challenges, using [`agents-cli`](https://github.com/google/agents-cli) and the [Agent Development Kit (ADK)](https://adk.dev/) — one of them (`mcp-toolset-triage-agent`) built primarily via natural-language prompts to the [Antigravity CLI](https://antigravity.google/) instead of hand-written code.
+Each subfolder is a self-contained agent project built while working through the certification's courses and challenge labs, using [`agents-cli`](https://github.com/google/agents-cli) and the [Agent Development Kit (ADK)](https://adk.dev/) — one of them (`mcp-toolset-triage-agent`) built primarily via natural-language prompts to the [Antigravity CLI](https://antigravity.google/) instead of hand-written code. See [Projects](#projects) below, organized by path.
 
 ## Path coverage
 
