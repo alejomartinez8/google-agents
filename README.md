@@ -2,7 +2,7 @@
 
 Learning repo for the **Gemini Enterprise Agent Development Certified Partner Specialist** certification ([Partner Learning program](https://rsvp.withgoogle.com/events/partner-learning/cps)), covering both the [**"Use Agents to Build Agents"**](https://partner.skills.google/paths/3476) and [**"Build and Deploy Agents with Agent Development Kit (ADK)"**](https://partner.skills.google/paths/4144) paths.
 
-Each subfolder is a self-contained agent project built while working through the path's labs and challenges, using the [Antigravity IDE](https://antigravity.google/), [`agents-cli`](https://github.com/google/agents-cli), and the [Agent Development Kit (ADK)](https://adk.dev/).
+Each subfolder is a self-contained agent project built while working through the path's labs and challenges, using [`agents-cli`](https://github.com/google/agents-cli) and the [Agent Development Kit (ADK)](https://adk.dev/) — one of them (`mcp-toolset-triage-agent`) built primarily via natural-language prompts to the [Antigravity CLI](https://antigravity.google/) instead of hand-written code.
 
 ## Path coverage
 
@@ -15,42 +15,44 @@ Each subfolder is a self-contained agent project built while working through the
 ## Projects
 
 ### [graph-workflow-routing](graph-workflow-routing/)
-Event-driven expense approval agent built with ADK 2.0's Graph Workflow API — it doesn't chat, it processes a report and returns a decision.
+Event-driven expense approval agent — guiding project of "Accelerate Agent Development with Antigravity and Agents CLI" (part of "Use Agents to Build Agents").
 
-- **Conditional routing, not fan-out**: exactly one of three branches runs per report (`EventActions(route=...)`), the other two never execute.
-- Two branches are **zero-token** — deterministic Python for policy violations and auto-approvals; only genuinely ambiguous cases reach the LLM.
-- Deterministically **redacts anything that looks like an SSN** before it ever reaches the model, on every branch.
-- Self-contained — no external database or datastore to provision.
+- Configure `agents-cli` and its ADK 2.0 skill set to scaffold, run, and evaluate an agent locally.
+- Build an event-driven (not chat-based) agent using ADK 2.0's Graph Workflow API.
+- Apply conditional routing and pre-model data sanitization so only genuinely ambiguous cases reach the LLM.
+- Practice the iterate-and-evaluate loop (`eval generate` / `eval grade`) against a spec-derived dataset before deploying.
 
 ### [mcp-toolset-triage-agent](mcp-toolset-triage-agent/)
-Single ADK agent that triages storm-delayed orders: looks up the order, checks loyalty tier via a mock logistics MCP server, and issues a tier-based compensation.
+Winter Storm Triage Agent — Challenge Lab **GENAI144**, "Accelerate Development with Antigravity" (part of "Use Agents to Build Agents").
 
-- **Simplest architecture in the repo** — one `Agent`, no sub-agents, no graph.
-- MCP server runs as a **local stdio subprocess**, physically bundled inside the deployed package (contrast with `graph-workflow-fanout`'s networked MCP server).
-- Built almost entirely by **prompting the Antigravity CLI (`agy`) in natural language** rather than hand-writing code — that's the actual skill the lab tests.
-- Real deployed resource ID and the lab's own grading artifacts (`summary_task*.md`) kept as a genuine record of what got produced.
+- Connect an external data source to an agent workflow using an MCP server.
+- Author agent skills and declarative workspace rules.
+- Scaffold agent deployment boilerplate using `agents-cli`.
+- Deploy the agent to Agent Runtime.
 
 ### [multi-agent-transfer-chain](multi-agent-transfer-chain/)
-Multi-agent ADK assistant for a paint department: product search, room/color picks, coverage calculation, pricing.
+Paint Shopping Assistant — Challenge Lab **GENAI129**, "Deploy an Agent with Agent Development Kit (ADK)" (part of "Build and Deploy Agents with ADK").
 
-- Central lab bug: **a search tool can't share an agent with non-search tools**, not even via a sub-agent — fixed by isolating the search agent behind its own `AgentTool`.
-- Transfer chain: `paint_agent` → `room_planner_agent` → `coverage_calculator_agent`, each handling one step of the conversation.
-- Grounded in a real product datasheet via **Agent Search** (`VertexAiSearchTool`).
-- Ships with a Chainlit frontend (needs pointing at your own deployed agent — the checked-in one is stale/destroyed).
+- Build an agent with ADK made up of a root agent and sub-agents.
+- Enable agents with an Agent Search tool and Python functions as tools.
+- Store agent output in session state and retrieve it for subsequent agent instructions.
+- Deploy the agent to Agent Runtime and query it from a web app.
 
 ### [graph-workflow-fanout](graph-workflow-fanout/)
-DevSecOps Incident Triage System — ADK 2.0 Graph Workflow that searches three sources in parallel and synthesizes one recommendation.
+DevSecOps Incident Triage System — lab **GENAI162**, "Build and Deploy Multi-Agent ADK Systems to Gemini Enterprise" (part of "Build and Deploy Agents with ADK").
 
-- **Fans out to 3 concurrent branches** (BigQuery vector search, internal Agent Search, external MCP + Google Search), synchronized by a `JoinNode` before synthesis.
-- Explicit grounding rule: **internal knowledge always wins over external**, enforced in the synthesis prompt.
-- Hits the same search-tool restriction as `multi-agent-transfer-chain`, solved differently — `bypass_multi_tools_limit=True` instead of an `AgentTool` wrapper — worth comparing both.
-- Deployed to Agent Runtime **and** registered in Gemini Enterprise as two separate steps (with a real region-mismatch gotcha documented).
+- Configure individual ADK agents and safety callbacks.
+- Retrieve toolsets dynamically using the ADK Agent Registry.
+- Design database vector search function nodes.
+- Orchestrate parallel task flows using graph edges and `JoinNode`s.
+- Deploy the multi-agent system to Agent Runtime and register/share it in Gemini Enterprise.
 
 ### [code-execution-sandbox](code-execution-sandbox/)
-Cymbal Analytics Portfolio Analyst — demonstrates Agent Platform's **Code Execution** sandbox (isolated, no outbound network, state persists across calls).
+Cymbal Analytics Portfolio Analyst — lab **GENAI163**, "Analyze Financial Portfolios with Gemini Enterprise Agent Platform Code Execution" (part of "Build and Deploy Agents with ADK").
 
-- The **same sandbox is driven two ways**: hand-written Python via direct SDK calls first, then an ADK agent that autonomously generates and runs its own code against it.
-- Portfolio risk metrics (return, volatility, Sharpe ratio) computed manually and **independently reproduced by the agent** against the same in-memory data, to cross-check.
-- Real quirks found along the way: a region mismatch between `.env` and where the sandbox actually runs, a duplicate `.env` key left by the notebook, and retry handling added beyond the lab's base code.
+- Configure and authenticate the Agent Platform SDK for Code Execution.
+- Create and manage Code Execution sandboxes using the Agent Platform SDK.
+- Execute multi-step Python code in a sandbox and retrieve stdout and file outputs.
+- Build an ADK agent with Code Execution and interact with it via `adk web`.
 
 Each project has its own `README.md` with setup, run, and deployment instructions specific to that agent.
