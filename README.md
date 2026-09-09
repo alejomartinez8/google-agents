@@ -61,6 +61,14 @@ Blog Writing & SEO Skill Assistant — lab **GENAI154**, "Use Skills with ADK Ag
 - Expose supplementary reference files dynamically to the LLM via `load_skill_resource`.
 - Utilize `skill-creator` to autonomously generate complete, spec-compliant `SKILL.md` skill definitions.
 
+#### [session-memory-persistence](session-memory-persistence/)
+Gemini Cloud Tutor — lab "Building an ADK Agent with Session and Memory Services", also from course 3 ("Craft ADK Agents with Persistent Memories").
+
+- Instrument and debug the session lifecycle, observing how events accumulate turn by turn.
+- Add session persistence by swapping `InMemorySessionService` for `VertexAiSessionService` (Agent Runtime-backed) and `DatabaseSessionService` (Postgres).
+- Add cross-session memory persistence with `InMemoryMemoryService` and `VertexAiMemoryBankService` (Agent Platform Memory Bank), confirmed to survive a full server restart.
+- Observe non-deterministic tool invocation, parallel tool calls, and live recovery from a tool error in an LLM agent loop.
+
 
 #### [multi-agent-transfer-chain](multi-agent-transfer-chain/)
 Paint Shopping Assistant — Challenge Lab **GENAI129**, "Deploy an Agent with Agent Development Kit (ADK)", closing out Path 2.
