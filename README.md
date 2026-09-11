@@ -80,6 +80,12 @@ Paint Shopping Assistant — Challenge Lab **GENAI129**, "Deploy an Agent with A
 
 ### Path 3 — [Agent Evaluation and Hill Climbing](https://partner.skills.google/paths/4306)
 
-Not started yet — covers evaluation metrics, iterative improvement ("hill climbing"), and cost optimization for agentic systems. No project here until it's underway.
+#### [evaluate-adk-agents](evaluate-adk-agents/)
+Cymbal Home & Garden customer service agent + a travel concierge agent — lab **GENAI164**, "Evaluate ADK Agents on Gemini Enterprise Agent Platform", from course 2 of the path.
+
+- Evaluate an ADK agent locally with ADK's built-in eval framework: reference metrics, an LLM judge, a custom rubric, and user simulation.
+- Prove a fix works with an optimize-and-verify pass against a seeded-bug agent version.
+- Evaluate an agent with Gemini Enterprise Agent Platform's managed eval tools: synthetic scenario generation, the User Simulator, custom metrics, and Automatic Loss Analysis.
+- Run a fully managed evaluation job against an agent deployed to Agent Runtime.
 
 Each project has its own `README.md` with setup, run, and deployment instructions specific to that agent.
