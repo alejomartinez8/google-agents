@@ -38,11 +38,48 @@ The scored run (same conversation, `hallucinations_v1` + `safety_v1`) came back 
 
 `v1` has one weakened line in its instruction: it calls `issue_refund` immediately instead of asking for a reason first. Against the shared `cs_refund.evalset.json` trajectory (ask first, refund second), `v1` **FAILED at 0.0** — it called `issue_refund` on turn 0 with an invented `reason='Customer request'`, then had nothing left to do on turn 1 when the real reason ("damaged") arrived, since it had already acted. The current agent (`v2`) **PASSED at 1.0** on the identical eval set — it asks first, then calls `issue_refund(order_id='ORD-101', reason='damaged')` with the real reason on turn 2. One instruction paragraph, the entire difference between a 0.0 and a 1.0 trajectory score — a concrete regression check, not just "it looked fine."
 
-## Lab B — `Lab_B_eval_geap.ipynb`
+## Lab B — `Lab_B_eval_geap.ipynb` (complete)
 
-Evaluates `travel_agent` (a travel concierge with `flight_specialist`/`hotel_specialist` sub-agents) with GEAP's managed tools: synthetic adversarial scenario generation, the User Simulator, custom metrics (one code-based efficiency metric, one LLM-judge tone metric) plus predefined multi-turn metrics, and Automatic Loss Analysis. First against the local agent, then against the same agent deployed to Agent Runtime.
+Evaluates `travel_agent` (a travel concierge with `flight_specialist`/`hotel_specialist` sub-agents) with GEAP's managed tools: synthetic adversarial scenario generation, the User Simulator, custom metrics (one code-based efficiency metric, one LLM-judge tone metric) plus predefined multi-turn metrics, and Automatic Loss Analysis. First against the local agent (Part 1), then against the same agent deployed to Agent Runtime via a single managed job (Part 2).
 
-*(not yet run)*
+### Real run results
+
+**Part 1 — local agent, 7 adversarial scenarios (unavailable cities, changing plans, invalid seat/room classes, impatient/incomplete users):**
+
+| Metric | Mean | Pass rate |
+|---|---|---|
+| `multi_turn_efficiency` (custom, code-based) | 0.180 | 0% |
+| `tone-check` (custom, LLM-judge) | 0.286 | 0% |
+| `multi_turn_tool_use_quality_v1` (predefined) | 0.815 | 14% (1/7) |
+| `multi_turn_task_success_v1` (predefined) | 0.589 | **0%** |
+
+Matches the notebook's own prediction — low custom-metric scores (adversarial scenarios force lots of tool calls and hostile tone, both penalized by design) and a higher tool-use score (the agent handles the chaos, just inefficiently). The interesting one: `multi_turn_task_success_v1` averages 0.589 (several cases scoring 0.75–0.875) yet its **pass rate is 0%** — because several scenarios are deliberately unwinnable (booking to a city with "no availability" by design), "task success" can't be achieved no matter how well the agent behaves. A 0% pass rate here doesn't mean the agent failed badly; it means the mean score, not the pass/fail column, is the one telling the real story for this metric on this dataset.
+
+**Automatic Loss Analysis** clustered the 6 failing `multi_turn_tool_use_quality_v1` cases into 2 named categories: **"Omission of Required Tool Call"** (6/7 items — the agent skips a prerequisite lookup and calls a dependent tool with a guessed/hallucinated parameter instead of fetching the real value first) and **"Incorrect Parameter Value"** (1/7 — right tool, right parameter name, wrong value). The dominant failure mode — skip the lookup, guess the parameter — is the same pattern as Lab A's `v1` bug (guessed `reason='Customer request'` instead of asking) — a recurring failure shape across this whole lab, not a one-off.
+
+**Console cross-check**: Agent Platform's console (`Optimize → Evaluation`) has `Experiments` / `Metrics` / `Online monitors` tabs matching the M1 vocabulary lesson exactly — but the `Experiments` tab showed "No rows to display" for this run. The managed Eval Management Service used here is still `v1beta1`/preview; its results aren't wired into that console UI yet. Results are only visible via the SDK or the GCS `dest` bucket.
+
+**Part 2 — managed run against the deployed agent, same 7 scenarios, one server-side job (713 seconds):**
+
+A real GEAP bug, not an agent problem: **2 of the 7 cases silently disappeared from the results.** The poll output showed:
+
+```
+Failed to load evaluation result from GCS: ...
+Error: 1 validation error for EvaluationItemResult
+request.candidateResponses.0.error
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'code': 13, 'message': "...has no attribute 'get'"}]
+```
+
+Those 2 cases failed server-side (gRPC code 13 = INTERNAL, an `AttributeError` inside the service). When the client SDK tried to parse *that error itself* to report it, the Pydantic model validating the error payload is strict (`extra_forbidden`) and rejected an unexpected field in it — so even the failure couldn't be reported. Net effect: `eval_case_results` silently contains 5 items instead of 7, with no flag in the summary table that 2 are missing — you only notice by counting. Summary metrics below are the mean of only those 5 surviving cases (higher across the board than Part 1's 7-case numbers, plausibly because the 2 missing cases were the hardest ones):
+
+| Metric | Mean (5/7 cases) |
+|---|---|
+| `multi_turn_efficiency` | 0.416 |
+| `tone-check` | 0.500 |
+| `multi_turn_tool_use_quality_v1` | 0.713 |
+| `multi_turn_task_success_v1` | 0.650 |
+
+**Takeaway**: three separate, independent instances of a GEAP-managed judge/scoring path silently dropping or misreporting results in this lab (the rubric "hallucinated parameters" misfire in Lab A, `safety_v1`'s never-instantiated evaluator, and this dropped-case bug) — a genuine pattern worth remembering: verify case counts and read the raw logs, don't trust a clean-looking summary table at face value.
 
 ## Setup
 
