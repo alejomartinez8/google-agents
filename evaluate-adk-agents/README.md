@@ -26,12 +26,12 @@ Writes `customer_service_agent/agent.py` (3 tools: `get_purchase_history`, `issu
 
 Grades the same fixed prompts three ways: exact match, an LLM judge, and a custom rubric. Eval set: `cs_eval_set.evalset.json` (pre-provided).
 
-| Metric | Config used | Result | Finding |
-|---|---|---|---|
-| `tool_trajectory_avg_score` | `eval_config.reference.json` | 1.0 / 1.0 | the agent called the right tools |
-| `response_match_score` (ROUGE-1) | `eval_config.reference.json` | fails 3/4 | paraphrasing breaks this word-overlap score |
-| `final_response_match_v2` (LLM-judge) | `eval_config.judge.json` | 1.0 / 1.0, same responses | shows the gap between reference metrics and judge metrics |
-| `rubric_based_final_response_quality_v1` | `eval_config.rubric.json` | 0.5 on the refund case | the judge called tool data "hallucinated" — **a wrong reason, not just a low score** |
+| Metric | Config | Score | Result | Note |
+|---|---|---|:---:|---|
+| `tool_trajectory_avg_score` | `eval_config.reference.json` | 1.0 / 1.0 | ✅ pass | right tools called |
+| `response_match_score` (ROUGE-1) | `eval_config.reference.json` | 0.49–0.75 | ❌ fail (3/4) | paraphrasing breaks word-overlap scoring |
+| `final_response_match_v2` (LLM-judge) | `eval_config.judge.json` | 1.0 / 1.0 | ✅ pass | same responses ROUGE rejected |
+| `rubric_based_final_response_quality_v1` | `eval_config.rubric.json` | 0.5 | ❌ fail (refund case) | judge's *reason* was wrong, not just the score |
 
 **A wrong judge reason, in its own words**: on turn 2 of the refund case, the agent reports the real order ID and amount, taken straight from the tool's response. The judge still scores `completeness` at 0.0. Its reason: *"the order details ... are based on hallucinated parameters and cannot be verified using trusted evidence."* But `ORD-101` and `$120.00` are exactly what the tool returned — nothing was hallucinated. Lesson: read the judge's reason, not just the pass/fail result.
 
@@ -39,19 +39,19 @@ Grades the same fixed prompts three ways: exact match, an LLM judge, and a custo
 
 Lets a simulated user hold a free-form, multi-turn conversation with the agent, then scores it for hallucinations and safety. Eval set: `cs_user_sim.evalset.json`, built from `session_input.json` + `conversation_scenarios.json` (not saved to disk — the `adk` CLI generates it with a random ID). First run: `eval_config_without_metrics.json` (dry run, no score, just confirms the simulated conversation matches the scenario). Scored run below: `eval_config_with_metrics.json`.
 
-| Metric | Config used | Result | Finding |
-|---|---|---|---|
-| `hallucinations_v1` | `eval_config_with_metrics.json` | 0.9–1.0 | normal, varies turn by turn |
-| `safety_v1` | `eval_config_with_metrics.json` | flat 0.0 on all 3 turns | no `SafetyV1Evaluator` warning in the logs → this evaluator probably never ran |
+| Metric | Config | Score | Result | Note |
+|---|---|---|:---:|---|
+| `hallucinations_v1` | `eval_config_with_metrics.json` | 0.9–1.0 | ✅ pass | normal, varies turn by turn |
+| `safety_v1` | `eval_config_with_metrics.json` | 0.0, all 3 turns | ❌ fail | no `SafetyV1Evaluator` warning in the logs → probably never ran |
 
 ### Part 4 — optimize and verify
 
 Compares a weaker agent version against the current one, on the same eval set, to prove a fix actually works. Eval set: `cs_refund.evalset.json` (pre-provided, one identical copy per agent folder).
 
-| Agent | Config used | `tool_trajectory_avg_score` | Why |
-|---|---|---|---|
-| `customer_service_agent_v1` (seeded bug) | `eval_config.trajectory.json` | 0.0 | calls the tool on turn 0 with a made-up `reason='Customer request'`, then has nothing left to do when the real reason arrives |
-| `customer_service_agent` (current) | `eval_config.trajectory.json` | 1.0 | asks first, then calls the tool with the real reason |
+| Agent | Config | Score | Result | Why |
+|---|---|---|:---:|---|
+| `customer_service_agent_v1` (seeded bug) | `eval_config.trajectory.json` | 0.0 | ❌ fail | made-up `reason='Customer request'` on turn 0, nothing left to do on turn 1 |
+| `customer_service_agent` (current) | `eval_config.trajectory.json` | 1.0 | ✅ pass | asks first, then uses the real reason |
 
 One weaker instruction line in `v1` — it calls `issue_refund` right away instead of asking for a reason first — is the whole difference between the two scores.
 
