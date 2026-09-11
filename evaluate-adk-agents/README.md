@@ -4,7 +4,7 @@ Two notebooks, two ways to evaluate ADK agents. **Lab A** evaluates an agent loc
 
 Based on lab **GENAI164**, course 2 ("Evaluate Agents on Gemini Enterprise Agent Platform") of the [Agent Evaluation and Hill Climbing](https://partner.skills.google/paths/4306) path. It runs in **Vertex AI Workbench** (managed JupyterLab), not Cloud Shell — so there is no `adk run`/`adk web`/`adk deploy` from a terminal here.
 
-## Lab A — `Lab_A_evaluate_adk_agents.ipynb` (complete)
+## Lab A — `Lab_A_evaluate_adk_agents.done.ipynb` (complete)
 
 `customer_service_agent`: 3 tools over mock data (Cymbal Home & Garden), evaluated with `adk eval`.
 
@@ -55,7 +55,7 @@ Compares a weaker agent version against the current one, on the same eval set, t
 
 One weaker instruction line in `v1` — it calls `issue_refund` right away instead of asking for a reason first — is the whole difference between the two scores.
 
-## Lab B — `Lab_B_eval_geap.ipynb` (complete)
+## Lab B — `Lab_B_eval_geap.done.ipynb` (complete)
 
 `travel_agent` plus 2 sub-agents, tested against 7 adversarial scenarios (cities with no availability, users who keep changing plans, invalid options).
 
@@ -108,6 +108,10 @@ Three separate, silent scoring bugs: a judge with a wrong reason (Lab A rubric),
 Needs Vertex AI Workbench and a GCP project with Vertex AI enabled. Each notebook installs its own dependencies in the first cell, then restarts the kernel — run the cells in order, from top to bottom, and don't skip the restart.
 
 `customer_service_agent/` and `customer_service_agent_v1/` come with their `.evalset.json` files already provided by the lab (Lab A reads them, it doesn't create them). The notebook writes the rest of the agent code itself, using `%%writefile` cells.
+
+Each notebook has two versions: `Lab_A_evaluate_adk_agents.ipynb` / `Lab_B_eval_geap.ipynb` are clean, no outputs, ready to run from scratch. `Lab_A_evaluate_adk_agents.done.ipynb` / `Lab_B_eval_geap.done.ipynb` are the same notebooks already run, with real outputs — the source for every result in this README.
+
+**Known gap**: `cs_user_sim.evalset.json` (Lab A, Part 3) is missing from `customer_service_agent/`. The `adk` CLI generates this file with a random ID (`adk eval_set create` / `add_eval_case`), so it never gets written by a `%%writefile` cell — it was not copied out of the Workbench environment before the lab session ended.
 
 ## Related
 
