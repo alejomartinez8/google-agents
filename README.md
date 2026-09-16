@@ -88,4 +88,12 @@ Cymbal Home & Garden customer service agent + a travel concierge agent — lab *
 - Evaluate an agent with Gemini Enterprise Agent Platform's managed eval tools: synthetic scenario generation, the User Simulator, custom metrics, and Automatic Loss Analysis.
 - Run a fully managed evaluation job against an agent deployed to Agent Runtime.
 
+#### [eval-challenge-lab](eval-challenge-lab/)
+Cymbal Pools BigQuery ledger agent — Challenge Lab **GENAI155**, "Evaluate and Improve Agent Development Kit Agents", closing out Path 3.
+
+- Build custom evaluation sets with rubrics to catch specific agent misbehaviors (data inconsistency, invalid state transitions).
+- Drive multi-turn conversations dynamically with the User Simulator instead of scripted messages.
+- Write robust custom Python tools to enforce consistent transactions and valid transitions.
+- Restrict an agent's tool access to only the verified tools, and re-run evaluations to prove the fix.
+
 Each project has its own `README.md` with setup, run, and deployment instructions specific to that agent.

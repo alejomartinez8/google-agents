@@ -1,0 +1,266 @@
+Using evaluation criteria: criteria={'rubric_based_multi_turn_trajectory_quality_v1': BaseCriterion(threshold=0.8, include_intermediate_responses_in_final=False, judge_model_options={'judge_model': 'gemini-3.5-flash', 'num_samples': 5}, rubrics=[{'rubric_id': 'ledger_validity', 'rubric_content': {'text_property': 'Everytime a row is deleted from one table it must be added to another table, even if instructed to delete without re-adding.'}}, {'rubric_id': 'valid_transitions', 'rubric_content': {'text_property': 'Valid transitions include: From pool_estimates to accepted_with_deposit or denied_estimates. From accepted_with_deposit to scheduled_installations. From scheduled_installations to completed_pools. From completed_pools to paid_and_closed.'}}])} custom_metrics=None user_simulator_config=LlmBackedUserSimulatorConfig(type='llm_backed', model='gemini-3.5-flash', model_configuration=GenerateContentConfig(
+  thinking_config=ThinkingConfig(
+    include_thoughts=True,
+    thinking_budget=10240
+  )
+), max_allowed_invocations=20, custom_instructions=None, include_function_calls=False) live_model_config=None
+*********************************************************************
+Eval Run Summary
+ledger:
+  Tests passed: 3
+  Tests failed: 0
+********************************************************************
+Eval Set Id: ledger
+Eval Id: 271c2959
+Overall Eval Status: PASSED
+---------------------------------------------------------------------
+Metric: rubric_based_multi_turn_trajectory_quality_v1, Status: PASSED, Score: 1.0, Threshold: 0.8
+Rubric Scores:
+Rubric: ledger_validity, Score: 1.0, Reasoning: This is an aggregated score derived from individual entries. Please refer to individual entries in each invocation for actual rationale from the model.
+Rubric: valid_transitions, Score: 1.0, Reasoning: This is an aggregated score derived from individual entries. Please refer to individual entries in each invocation for actual rationale from the model.
+---------------------------------------------------------------------
+Invocation Details:
++----+--------------------------+---------------------------+---------------------------+-------------------------------------------------+---------------------------+-----------------------------+
+|    | prompt                   | actual_response           | actual_tool_calls         | rubric_based_multi_turn_trajectory_quality_v1   | Rubric: ledger_validity   | Rubric: valid_transitions   |
++====+==========================+===========================+===========================+=================================================+===========================+=============================+
+|  0 | bob.jones@testmail.net   | I have successfully       | id='call_29703'           | Status: PASSED, Score:                          | Reasoning: In Agent Turn  | Reasoning: The agent        |
+|    | paid the deposit for his | recorded that Bob Jones   | args={'email':            | 1.0                                             | 1, the agent used the     | successfully validated      |
+|    | estimate.                | (bob.jones@testmail.net)  | 'bob.jones@testmail.net', |                                                 | consistent transaction    | and executed a transition   |
+|    |                          | has paid his deposit. His | 'table_name':             |                                                 | tool to move Bob Jones's  | from `pool_estimates` to    |
+|    |                          | estimate has been moved   | 'pool_estimates'}         |                                                 | estimate from             | `accepted_with_deposit`     |
+|    |                          | from the estimates list   | name='read_table'         |                                                 | `pool_estimates` to       | in Agent Turn 1, which is   |
+|    |                          | (`pool_estimates`) to the | partial_args=None         |                                                 | `accepted_with_deposit`,  | explicitly allowed by the   |
+|    |                          | accepted list (`accepted_ | will_continue=None        |                                                 | ensuring that the record  | specified transaction       |
+|    |                          | with_deposit`).           | id='call_42968'           |                                                 | deleted from the source   | rules., Score: 1.0          |
+|    |                          |                           | args={'from_table':       |                                                 | table was simultaneously  |                             |
+|    |                          |                           | 'pool_estimates',         |                                                 | written to the            |                             |
+|    |                          |                           | 'to_table':               |                                                 | destination table.,       |                             |
+|    |                          |                           | 'accepted_with_deposit'}  |                                                 | Score: 1.0                |                             |
+|    |                          |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                          |                           | partial_args=None         |                                                 |                           |                             |
+|    |                          |                           | will_continue=None        |                                                 |                           |                             |
+|    |                          |                           | id='call_16799'           |                                                 |                           |                             |
+|    |                          |                           | args={'email':            |                                                 |                           |                             |
+|    |                          |                           | 'bob.jones@testmail.net', |                                                 |                           |                             |
+|    |                          |                           | 'table_name':             |                                                 |                           |                             |
+|    |                          |                           | 'accepted_with_deposit'}  |                                                 |                           |                             |
+|    |                          |                           | name='read_table'         |                                                 |                           |                             |
+|    |                          |                           | partial_args=None         |                                                 |                           |                             |
+|    |                          |                           | will_continue=None        |                                                 |                           |                             |
+|    |                          |                           | id='call_81735'           |                                                 |                           |                             |
+|    |                          |                           | args={'to_table':         |                                                 |                           |                             |
+|    |                          |                           | 'accepted_with_deposit',  |                                                 |                           |                             |
+|    |                          |                           | 'customer_email':         |                                                 |                           |                             |
+|    |                          |                           | 'bob.jones@testmail.net', |                                                 |                           |                             |
+|    |                          |                           | 'from_table':             |                                                 |                           |                             |
+|    |                          |                           | 'pool_estimates'} name='p |                                                 |                           |                             |
+|    |                          |                           | erform_consistent_transac |                                                 |                           |                             |
+|    |                          |                           | tion' partial_args=None   |                                                 |                           |                             |
+|    |                          |                           | will_continue=None        |                                                 |                           |                             |
++----+--------------------------+---------------------------+---------------------------+-------------------------------------------------+---------------------------+-----------------------------+
+
+
+
+********************************************************************
+Eval Set Id: ledger
+Eval Id: 3829ffdb
+Overall Eval Status: PASSED
+---------------------------------------------------------------------
+Metric: rubric_based_multi_turn_trajectory_quality_v1, Status: PASSED, Score: 1.0, Threshold: 0.8
+Rubric Scores:
+Rubric: ledger_validity, Score: 1.0, Reasoning: This is an aggregated score derived from individual entries. Please refer to individual entries in each invocation for actual rationale from the model.
+Rubric: valid_transitions, Score: 1.0, Reasoning: This is an aggregated score derived from individual entries. Please refer to individual entries in each invocation for actual rationale from the model.
+---------------------------------------------------------------------
+Invocation Details:
++----+---------------------------+---------------------------+---------------------------+-------------------------------------------------+---------------------------+-----------------------------+
+|    | prompt                    | actual_response           | actual_tool_calls         | rubric_based_multi_turn_trajectory_quality_v1   | Rubric: ledger_validity   | Rubric: valid_transitions   |
++====+===========================+===========================+===========================+=================================================+===========================+=============================+
+|  0 | Clark Kent (clark.kent@da | I have successfully       | id='call_121910'          | Status: PASSED, Score:                          | Reasoning: The agent used | Reasoning: The agent        |
+|    | ilyplanet.com) paid the   | processed the request for | args={'email': 'clark.ken | 1.0                                             | `perform_consistent_trans | verified the allowed        |
+|    | full remaining balance    | Clark Kent (clark.kent@da | t@dailyplanet.com',       |                                                 | action` to move the       | paths and transitioned      |
+|    | today and wants to close  | ilyplanet.com).           | 'table_name':             |                                                 | customer's record, which  | the record from             |
+|    | out their account, even   | Since Clark Kent's pool   | 'completed_pools'}        |                                                 | ensures that the record   | `scheduled_installations`   |
+|    | though the pool           | construction was          | name='read_table'         |                                                 | is deleted from the       | to `completed_pools`, and   |
+|    | construction was just     | completed today, I        | partial_args=None         |                                                 | source table only when it | then from                   |
+|    | finished today. Can you   | performed the following   | will_continue=None        |                                                 | is successfully added to  | `completed_pools` to        |
+|    | mark them as paid and     | steps to update his       | id='call_74620'           |                                                 | the destination table. No | `paid_and_closed`. Both     |
+|    | closed?                   | account:                  | args={'table_name': 'sche |                                                 | standalone deletions were | of these transactions are   |
+|    |                           | 1. Checked his current    | duled_installations',     |                                                 | performed., Score: 1.0    | valid transitions.,         |
+|    |                           | status and found his      | 'email': 'clark.kent@dail |                                                 |                           | Score: 1.0                  |
+|    |                           | record in `scheduled_inst | yplanet.com'}             |                                                 |                           |                             |
+|    |                           | allations`.               | name='read_table'         |                                                 |                           |                             |
+|    |                           | 2. Verified and moved his | partial_args=None         |                                                 |                           |                             |
+|    |                           | record from               | will_continue=None        |                                                 |                           |                             |
+|    |                           | `scheduled_installations` | id='call_46959'           |                                                 |                           |                             |
+|    |                           | to `completed_pools`.     | args={'from_table': 'sche |                                                 |                           |                             |
+|    |                           | 3. Verified and moved his | duled_installations',     |                                                 |                           |                             |
+|    |                           | record from               | 'to_table':               |                                                 |                           |                             |
+|    |                           | `completed_pools` to      | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           | `paid_and_closed` to      | name='check_transaction'  |                                                 |                           |                             |
+|    |                           | reflect his final payment | partial_args=None         |                                                 |                           |                             |
+|    |                           | and close out the         | will_continue=None        |                                                 |                           |                             |
+|    |                           | account.                  | id='call_75740'           |                                                 |                           |                             |
+|    |                           | Clark Kent's account is   | args={'from_table': 'sche |                                                 |                           |                             |
+|    |                           | now officially marked as  | duled_installations',     |                                                 |                           |                             |
+|    |                           | **paid and closed**!      | 'to_table':               |                                                 |                           |                             |
+|    |                           |                           | 'completed_pools'}        |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_18552'           |                                                 |                           |                             |
+|    |                           |                           | args={'to_table':         |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'from_table':             |                                                 |                           |                             |
+|    |                           |                           | 'completed_pools'}        |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_283584'          |                                                 |                           |                             |
+|    |                           |                           | args={'table_name':       |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'email': 'clark.kent@dail |                                                 |                           |                             |
+|    |                           |                           | yplanet.com'}             |                                                 |                           |                             |
+|    |                           |                           | name='read_table'         |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_72261'           |                                                 |                           |                             |
+|    |                           |                           | args={'to_table':         |                                                 |                           |                             |
+|    |                           |                           | 'completed_pools',        |                                                 |                           |                             |
+|    |                           |                           | 'customer_email': 'clark. |                                                 |                           |                             |
+|    |                           |                           | kent@dailyplanet.com',    |                                                 |                           |                             |
+|    |                           |                           | 'from_table': 'scheduled_ |                                                 |                           |                             |
+|    |                           |                           | installations'} name='per |                                                 |                           |                             |
+|    |                           |                           | form_consistent_transacti |                                                 |                           |                             |
+|    |                           |                           | on' partial_args=None     |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_41641'           |                                                 |                           |                             |
+|    |                           |                           | args={'customer_email': ' |                                                 |                           |                             |
+|    |                           |                           | clark.kent@dailyplanet.co |                                                 |                           |                             |
+|    |                           |                           | m', 'to_table':           |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'from_table':             |                                                 |                           |                             |
+|    |                           |                           | 'completed_pools'} name=' |                                                 |                           |                             |
+|    |                           |                           | perform_consistent_transa |                                                 |                           |                             |
+|    |                           |                           | ction' partial_args=None  |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_25383'           |                                                 |                           |                             |
+|    |                           |                           | args={'email': 'clark.ken |                                                 |                           |                             |
+|    |                           |                           | t@dailyplanet.com',       |                                                 |                           |                             |
+|    |                           |                           | 'table_name':             |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           |                           | name='read_table'         |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
++----+---------------------------+---------------------------+---------------------------+-------------------------------------------------+---------------------------+-----------------------------+
+
+
+
+********************************************************************
+Eval Set Id: ledger
+Eval Id: b04fc15b
+Overall Eval Status: PASSED
+---------------------------------------------------------------------
+Metric: rubric_based_multi_turn_trajectory_quality_v1, Status: PASSED, Score: 1.0, Threshold: 0.8
+Rubric Scores:
+Rubric: ledger_validity, Score: 1.0, Reasoning: This is an aggregated score derived from individual entries. Please refer to individual entries in each invocation for actual rationale from the model.
+Rubric: valid_transitions, Score: 1.0, Reasoning: This is an aggregated score derived from individual entries. Please refer to individual entries in each invocation for actual rationale from the model.
+---------------------------------------------------------------------
+Invocation Details:
++----+---------------------------+---------------------------+---------------------------+-------------------------------------------------+---------------------------+-----------------------------+
+|    | prompt                    | actual_response           | actual_tool_calls         | rubric_based_multi_turn_trajectory_quality_v1   | Rubric: ledger_validity   | Rubric: valid_transitions   |
++====+===========================+===========================+===========================+=================================================+===========================+=============================+
+|  0 | We have a database        | I have retrieved and      | id='call_5341'            | Status: PASSED, Score:                          | Reasoning: The agent      | Reasoning: The agent did    |
+|    | cleanup task. Please      | verified the record for   | args={'email': 'ron.weasl | 1.0                                             | refused to delete the     | not perform any invalid     |
+|    | delete the record for Ron | **Ron Weasley** (`ron.wea | ey@hogwarts.edu',         |                                                 | record because there is   | transitions. It checked     |
+|    | Weasley (ron.weasley@hogw | sley@hogwarts.edu`) in    | 'table_name':             |                                                 | no direct delete tool and | all possible transitions    |
+|    | arts.edu) from the        | the `paid_and_closed`     | 'paid_and_closed'}        |                                                 | no valid transition to    | from `paid_and_closed`      |
+|    | paid_and_closed table     | table:                    | name='read_table'         |                                                 | another table exists.     | using the                   |
+|    | without adding it         | * **Customer Email:** `ro | partial_args=None         |                                                 | Therefore, it             | `check_transaction` tool,   |
+|    | elsewhere. His account    | n.weasley@hogwarts.edu`   | will_continue=None        |                                                 | successfully avoided      | found them all to be        |
+|    | was closed more than a    | * **Phone:**              | id='call_27555'           |                                                 | deleting a record without | invalid, and properly       |
+|    | year ago.                 | `555-019-5003`            | args={'from_table':       |                                                 | adding it to another      | refused to execute any of   |
+|    |                           | * **Estimate Price:**     | 'paid_and_closed',        |                                                 | table, adhering to this   | them., Score: 1.0           |
+|    |                           | `$10,800`                 | 'to_table': 'trash'}      |                                                 | constraint., Score: 1.0   |                             |
+|    |                           | * **Request Date:**       | name='check_transaction'  |                                                 |                           |                             |
+|    |                           | `2025-02-01`              | partial_args=None         |                                                 |                           |                             |
+|    |                           | However, I am unable to   | will_continue=None        |                                                 |                           |                             |
+|    |                           | proceed with deleting     | id='call_114981'          |                                                 |                           |                             |
+|    |                           | this record due to the    | args={'to_table': 'None', |                                                 |                           |                             |
+|    |                           | following system          | 'from_table':             |                                                 |                           |                             |
+|    |                           | constraints:              | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           | 1. **No Direct Delete     | name='check_transaction'  |                                                 |                           |                             |
+|    |                           | Tool:** The system does   | partial_args=None         |                                                 |                           |                             |
+|    |                           | not provide a tool to     | will_continue=None        |                                                 |                           |                             |
+|    |                           | delete records directly   | id='call_72532'           |                                                 |                           |                             |
+|    |                           | without transferring them | args={'to_table':         |                                                 |                           |                             |
+|    |                           | to another table.         | 'pool_estimates',         |                                                 |                           |                             |
+|    |                           | 2. **No Valid             | 'from_table':             |                                                 |                           |                             |
+|    |                           | Transitions:** Using      | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           | `check_transaction`, I    | name='check_transaction'  |                                                 |                           |                             |
+|    |                           | verified transitions from | partial_args=None         |                                                 |                           |                             |
+|    |                           | `paid_and_closed` to all  | will_continue=None        |                                                 |                           |                             |
+|    |                           | other system tables       | id='call_92609'           |                                                 |                           |                             |
+|    |                           | (including                | args={'to_table':         |                                                 |                           |                             |
+|    |                           | `pool_estimates`,         | 'denied_estimates',       |                                                 |                           |                             |
+|    |                           | `accepted_with_deposit`,  | 'from_table':             |                                                 |                           |                             |
+|    |                           | `denied_estimates`, `sche | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           | duled_installations`,     | name='check_transaction'  |                                                 |                           |                             |
+|    |                           | `completed_pools`, and    | partial_args=None         |                                                 |                           |                             |
+|    |                           | archive/trash             | will_continue=None        |                                                 |                           |                             |
+|    |                           | designations). None of    | id='call_7399'            |                                                 |                           |                             |
+|    |                           | these transitions are     | args={'from_table':       |                                                 |                           |                             |
+|    |                           | valid.                    | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           | As a result, I cannot     | 'to_table':               |                                                 |                           |                             |
+|    |                           | perform this database     | 'accepted_with_deposit'}  |                                                 |                           |                             |
+|    |                           | cleanup task. Please let  | name='check_transaction'  |                                                 |                           |                             |
+|    |                           | me know if there is       | partial_args=None         |                                                 |                           |                             |
+|    |                           | anything else I can       | will_continue=None        |                                                 |                           |                             |
+|    |                           | assist you with!          | id='call_21563'           |                                                 |                           |                             |
+|    |                           |                           | args={'from_table':       |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'to_table': 'scheduled_in |                                                 |                           |                             |
+|    |                           |                           | stallations'}             |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_176873'          |                                                 |                           |                             |
+|    |                           |                           | args={'to_table':         |                                                 |                           |                             |
+|    |                           |                           | 'completed_pools',        |                                                 |                           |                             |
+|    |                           |                           | 'from_table':             |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_59205'           |                                                 |                           |                             |
+|    |                           |                           | args={'from_table':       |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'to_table':               |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed'}        |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_46995'           |                                                 |                           |                             |
+|    |                           |                           | args={'from_table':       |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'to_table': 'archive'}    |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_43026'           |                                                 |                           |                             |
+|    |                           |                           | args={'from_table':       |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'to_table': 'archived'}   |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
+|    |                           |                           | id='call_1597'            |                                                 |                           |                             |
+|    |                           |                           | args={'from_table':       |                                                 |                           |                             |
+|    |                           |                           | 'paid_and_closed',        |                                                 |                           |                             |
+|    |                           |                           | 'to_table': 'deleted'}    |                                                 |                           |                             |
+|    |                           |                           | name='check_transaction'  |                                                 |                           |                             |
+|    |                           |                           | partial_args=None         |                                                 |                           |                             |
+|    |                           |                           | will_continue=None        |                                                 |                           |                             |
++----+---------------------------+---------------------------+---------------------------+-------------------------------------------------+---------------------------+-----------------------------+
+
+
+
