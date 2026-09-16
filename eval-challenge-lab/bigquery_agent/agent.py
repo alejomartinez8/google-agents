@@ -203,9 +203,18 @@ def perform_consistent_transaction(from_table: str, to_table: str, customer_emai
     Returns:
         Whether it could perform the transaction
     """
-    # TODO: Implement this function by combining three of the functions above.
-    # Make sure to consider if a row is retrieved before attempting to write it
-    # to another table or remove it.
+    # Original (buggy) version: the whole agent ran with tools=[bigquery_toolset]
+    # instead, so this function was never even called —
+    # the model could run arbitrary SQL directly and delete a row with nothing
+    # forcing it to write the row elsewhere first. Fixed below: read -> write -> delete,
+    # each step gated on the previous one succeeding, so a failed write never loses data.
+    #
+    # def perform_consistent_transaction(from_table, to_table, customer_email):
+    #     # TODO: Implement this function by combining three of the functions above.
+    #     # Make sure to consider if a row is retrieved before attempting to write it
+    #     # to another table or remove it.
+    #     return False
+
     row = read_table(from_table, customer_email)
     if not row:
         return False
@@ -227,9 +236,15 @@ def check_transaction(from_table: str, to_table: str) -> bool:
     Returns:
         bool: True if the transition is valid, False otherwise.
     """
-    # TODO: Implement this function by creating a data structure
-    # that allows the agent to look up if a move from one table
-    # to another is a valid transition.
+    # def check_transaction(from_table, to_table):
+    #     # TODO: Implement this function by creating a data structure
+    #     # that allows the agent to look up if a move from one table
+    #     # to another is a valid transition.
+    #     return False
+
+    # First "fixed" pass had a typo here ("aceppted_with_deposit") that all 3 eval
+    # cases still passed, since none of them transition *from* accepted_with_deposit —
+    # a green eval only proves what it actually exercises.
     valid_transitions = {
         "pool_estimates": {"accepted_with_deposit", "denied_estimates"},
         "accepted_with_deposit": {"scheduled_installations"},
@@ -270,6 +285,10 @@ root_agent = Agent(
     """,
     before_model_callback=log_query_to_model,
     after_model_callback=log_model_response,
+    # Original: tools=[bigquery_toolset] — free-form SQL access, no restriction on what
+    # the agent could do. Restricting the tool surface to these 4 typed functions is what
+    # actually stops a standalone delete: the agent has no tool capable of one, so it
+    # refuses even when explicitly asked (see Ron Weasley case in the README).
     tools=[read_table, read_table_all, check_transaction, perform_consistent_transaction],
 )
 

@@ -6,7 +6,7 @@ Based on Google Cloud Skills Challenge Lab **GENAI155** — "Evaluate and Improv
 
 ## The scenario: a prototype agent with two logic bugs
 
-The starting agent (`bigquery_agent_buggy/`) had unrestricted access to a generic `BigQueryToolset` — it could run arbitrary SQL. That gave it two ways to corrupt the ledger:
+The starting agent had unrestricted access to a generic `BigQueryToolset` — it could run arbitrary SQL. That gave it two ways to corrupt the ledger:
 
 - **Data inconsistency** — it could delete a row from one table without adding it to another, losing the record entirely.
 - **Invalid transitions** — it could move a customer between stages out of order (e.g. `scheduled_installations` straight to `paid_and_closed`, skipping `completed_pools`).
@@ -30,7 +30,7 @@ The three conversations in `evaluations/scenarios.json` aren't fixed scripts —
 | Clark Kent | invalid direct jump (`scheduled_installations → paid_and_closed`) | agent chains two valid hops instead |
 | Ron Weasley | explicit "delete without re-adding" request | agent must **refuse** |
 
-## The fix (`bigquery_agent/`)
+## The fix (`bigquery_agent/agent.py`)
 
 1. **`perform_consistent_transaction`** — read → write → delete, in that order, each step gated on the previous one succeeding. Write-before-delete (not the reverse) is the deliberate choice: if the write fails, the source row is untouched — a duplicate is recoverable, a lost row isn't.
 2. **`check_transaction`** — a `dict[str, set[str]]` lookup of the 4 valid hops, `O(1)`, defaulting to `False` for any unknown `from_table`.
@@ -38,7 +38,7 @@ The three conversations in `evaluations/scenarios.json` aren't fixed scripts —
 
 **Gotcha caught post-pass:** the first "fixed" version had `"aceppted_with_deposit"` (typo) as a dict key in `check_transaction`. All 3 eval cases still passed 3/3 — none of them happen to trigger a transition *from* `accepted_with_deposit`, so the bug went undetected by this particular eval set. Fixed, but worth remembering: **a green eval only proves what it actually exercises.**
 
-`bigquery_agent_buggy/` keeps the original buggy version (both `TODO`s unimplemented, full `BigQueryToolset` access) for before/after comparison — same pattern as `evaluate-adk-agents/customer_service_agent_buggy` in the sibling project. It's trimmed to the minimum needed to import it as its own agent module: `agent.py`, `__init__.py`, `callback_logging.py`. Nothing under `evaluations/` or `ledger.evalset.json` is duplicated — `adk eval` takes two independent arguments, the agent module path and the eval set, and the eval set can be an explicit file path (not just a bare id resolved relative to the module), so both agent versions are evaluated against the exact same `bigquery_agent/ledger.evalset.json`.
+This is reference material, not a live project, so there's only one `agent.py` — the original buggy code (both unimplemented `TODO`s, the unrestricted `bigquery_toolset`) is kept as comments right above each fix, instead of a separate `_buggy` module. The full original file is also recoverable from git history (`7d3764e`) if it's ever needed as a real runnable agent again.
 
 ## Run it
 
@@ -60,17 +60,4 @@ adk eval bigquery_agent ledger \
 
 Re-run `terraform apply` before each eval pass — the agent mutates real rows, so a second run needs a reset to the seeded baseline.
 
-**Result:** 3/3 passed, score 1.0 on both `ledger_validity` and `valid_transitions` for all three cases.
-
-### Comparing against the buggy version
-
-To reproduce the before/after contrast directly (same evalset, same rubrics, different agent):
-
-```bash
-terraform apply -var="gcp_project_id=<PROJECT_ID>" -auto-approve
-adk eval bigquery_agent_buggy bigquery_agent/ledger.evalset.json \
-  --config_file_path bigquery_agent/evaluations/eval_config.json \
-  --print_detailed_results --log_level=CRITICAL
-```
-
-Same eval set, same rubrics, only the agent module (first argument) changes — so any score difference between the two runs is attributable to the fix, not to a different test.
+**Result:** 3/3 passed, score 1.0 on both `ledger_validity` and `valid_transitions` for all three cases. `eval_results.txt` and `improved_eval_results.txt` in this folder are the raw before/after runs.
