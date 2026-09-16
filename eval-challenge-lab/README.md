@@ -38,7 +38,7 @@ The three conversations in `evaluations/scenarios.json` aren't fixed scripts —
 
 **Gotcha caught post-pass:** the first "fixed" version had `"aceppted_with_deposit"` (typo) as a dict key in `check_transaction`. All 3 eval cases still passed 3/3 — none of them happen to trigger a transition *from* `accepted_with_deposit`, so the bug went undetected by this particular eval set. Fixed, but worth remembering: **a green eval only proves what it actually exercises.**
 
-`bigquery_agent_buggy/` keeps the original buggy version (both `TODO`s unimplemented, full `BigQueryToolset` access) for before/after comparison — same pattern as `evaluate-adk-agents/customer_service_agent_buggy` in the sibling project. It's trimmed to the minimum needed to import and evaluate it as its own agent module: `agent.py`, `__init__.py`, `callback_logging.py`, and its own copy of `ledger.evalset.json` (ADK resolves an eval set by name *relative to the agent module you point it at*, so this one file has to exist per module — it's not something you can point at a shared path). `evaluations/eval_config.json`, `scenarios.json` and `session_input.json` — the human-authored test definitions — stay in `bigquery_agent/` only, since `adk eval` takes `--config_file_path` as an explicit flag and doesn't care which agent module it's evaluating.
+`bigquery_agent_buggy/` keeps the original buggy version (both `TODO`s unimplemented, full `BigQueryToolset` access) for before/after comparison — same pattern as `evaluate-adk-agents/customer_service_agent_buggy` in the sibling project. It's trimmed to the minimum needed to import it as its own agent module: `agent.py`, `__init__.py`, `callback_logging.py`. Nothing under `evaluations/` or `ledger.evalset.json` is duplicated — `adk eval` takes two independent arguments, the agent module path and the eval set, and the eval set can be an explicit file path (not just a bare id resolved relative to the module), so both agent versions are evaluated against the exact same `bigquery_agent/ledger.evalset.json`.
 
 ## Run it
 
@@ -68,9 +68,9 @@ To reproduce the before/after contrast directly (same evalset, same rubrics, dif
 
 ```bash
 terraform apply -var="gcp_project_id=<PROJECT_ID>" -auto-approve
-adk eval bigquery_agent_buggy ledger \
+adk eval bigquery_agent_buggy bigquery_agent/ledger.evalset.json \
   --config_file_path bigquery_agent/evaluations/eval_config.json \
   --print_detailed_results --log_level=CRITICAL
 ```
 
-Both `bigquery_agent/ledger.evalset.json` and `bigquery_agent_buggy/ledger.evalset.json` hold identical eval cases (same `scenarios.json`/`session_input.json` used to generate both) — only the agent code being evaluated differs, so any score difference between the two runs is attributable to the fix, not to a different test.
+Same eval set, same rubrics, only the agent module (first argument) changes — so any score difference between the two runs is attributable to the fix, not to a different test.
