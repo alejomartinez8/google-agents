@@ -22,6 +22,8 @@ Every `adk eval` call below pairs one **eval set** (the test data: prompts, expe
 
 ### Part 1 — build and smoke-test the agent
 
+**En simple:** no es un experimento de evaluación — es solo construir el agente y probar con un mensaje que funciona antes de gastar corridas de eval en él.
+
 Writes `customer_service_agent/agent.py`: a single `Agent` (model `gemini-3.5-flash`) with three tools over an in-memory mock dataset for two customers (CUST001, CUST002), chosen so expected tool calls and answers stay stable run to run (only the model's exact wording varies):
 
 - `get_purchase_history(customer_id)` — returns a customer's past orders and their status (`delivered`, `shipped`, `refunded`).
@@ -33,6 +35,12 @@ The instruction tells the agent to identify the customer, check status before ac
 Before any formal evaluation, the notebook imports the agent and sends it one message through an `InMemoryRunner` as a sanity check: asked for CUST001's purchase history, the agent called `get_purchase_history(customer_id='CUST001')` and returned both real orders, formatted correctly. This confirms the wiring (imports, tool signatures, package structure) works before spending eval runs on it.
 
 ### Part 2 — reference metrics, LLM-judge, rubric
+
+**En simple:** las mismas preguntas y respuestas se califican de 3 formas distintas, para ver que "¿está bien la respuesta?" no tiene una sola respuesta — depende de cómo calificás.
+- `tool_trajectory_avg_score`: ¿usó las herramientas correctas? (exacto, sin modelo)
+- `response_match_score` (ROUGE): ¿usa las mismas palabras que la respuesta esperada? → falla seguido, aunque la respuesta esté bien, solo por decirlo distinto.
+- `final_response_match_v2` (juez LLM): ¿significa lo mismo, aunque cambien las palabras? → aprueba lo que ROUGE rechazó.
+- `rubric_based_final_response_quality_v1`: un juez califica según reglas que vos escribís (ej. "que sea completa") → acá se ve que el juez puede acertar la nota por el motivo incorrecto.
 
 Grades the *same* fixed prompts three different ways, to show that "did the agent do the right thing?" doesn't have one answer — it depends on how you grade. Eval set: `cs_eval_set.evalset.json` (pre-provided, 2 cases), which records for each prompt both the expected final text *and* the expected tool calls under `intermediate_data.invocation_events` (e.g. `get_purchase_history(customer_id='CUST001')`).
 
@@ -53,6 +61,10 @@ ADK also supports `rubric_based_tool_use_quality_v1` (rubrics on tool use instea
 
 ### Part 3 — user simulation
 
+**En simple:** un "usuario falso" (otro modelo) conversa varios turnos con el agente pidiendo un reembolso, y se mide la conversación completa (no una pregunta suelta).
+- `hallucinations_v1`: ¿el agente inventó datos que no vinieron de las herramientas?
+- `safety_v1`: ¿la respuesta es segura? Dio 0 siempre — probablemente porque esta métrica nunca corrió bien, no porque el agente dijera algo peligroso.
+
 So far every prompt was fixed and scripted. Part 3 instead lets a **simulated user** (a second model playing a customer) hold a free-form, multi-turn conversation with the agent toward a goal, then scores the resulting conversation. This tests behavior no fixed script would catch — how the agent handles a real back-and-forth.
 
 The scenario (`conversation_scenarios.json`) gives the simulator a `starting_prompt` and a `conversation_plan`: customer CUST001 wants a refund on damaged headphones, order ORD-101. `session_input.json` plus that scenario feed `adk eval_set create` / `add_eval_case`, which generates `cs_user_sim.evalset.json` with a random ID — this file is *not* one of the pre-provided ones, and is not saved by a `%%writefile` cell (see **Known gap** below).
@@ -70,6 +82,9 @@ Two eval configs share the same **user simulator** (`model: gemini-3.5-flash`, `
 `hallucinations_v1` behaves as expected — high, slightly noisy scores, since the simulated conversation is different every run. `safety_v1` is the surprising result: 0.0 on every single turn, which would normally mean "unsafe response." But the run logs never show a `SafetyV1Evaluator` warning or trace that the evaluator actually executed — the likelier explanation is the metric silently never ran and defaulted to 0, not that the agent said something unsafe three times in a row. This is one of the "silent scoring bugs" both labs turn up (see **Pattern across both labs**).
 
 ### Part 4 — optimize and verify
+
+**En simple:** mismo agente, pero una versión (v1) tiene una instrucción peor (reembolsa sin preguntar el motivo). Se mide con una sola métrica:
+- `tool_trajectory_avg_score`: ¿siguió los pasos correctos? v1 falla (inventa un motivo), la versión buena pasa.
 
 This is the "prove your fix actually works" loop: compare a deliberately weaker agent version against the current one, on the *same* eval set, using a metric narrow enough to isolate the one behavior that changed. Eval set: `cs_refund.evalset.json` (pre-provided, one identical copy per agent folder). Eval config: `eval_config.trajectory.json`, scoring only `tool_trajectory_avg_score` (threshold 1.0) — deliberately ignoring response wording, so the comparison is purely "did it call the right tools."
 
@@ -112,6 +127,14 @@ task_success_v1           0.589  ██████░░░░           0.650 
 
 ### Part 1 — local agent
 
+**En simple:** se generan 7 conversaciones difíciles a propósito (ciudades sin vuelos, usuarios que cambian de opinión) y se miden 4 cosas:
+- `multi_turn_efficiency` (métrica propia): castiga si el agente llama herramientas de más o repite la misma llamada (bucle).
+- `tone-check` (métrica propia): un juez LLM revisa si la respuesta es profesional y empática.
+- `tool_use_quality_v1`: ¿usó bien las herramientas en toda la conversación?
+- `task_success_v1`: ¿logró completar el pedido? (si el pedido era imposible, "fallar" es lo correcto)
+
+Además se agrupan los errores en categorías (ej. "se saltó un paso obligatorio") para ver el patrón, no solo el número.
+
 **Step 1 — generate scenarios.** `generate_conversation_scenarios` auto-creates 7 multi-turn test cases from the agent's own description, with an explicit `generation_instruction` steering toward adversarial cases: booking to cities with no availability (Cairo, Reykjavik), changing the destination/dates mid-conversation, asking for seat classes or room types that don't exist, an impatient user giving incomplete details. This replaces hand-writing eval cases (as Lab A's pre-provided eval sets did) with generating them from a spec.
 
 **Step 2 — simulate.** `run_inference` with a `user_simulator_config` plays the user across several turns against the in-notebook agent and records the full conversation trace — the same User Simulator concept as Lab A Part 3, but through the GEAP SDK, running locally (both the agent and the simulator execute in the notebook and call Gemini directly, no managed job yet).
@@ -137,6 +160,8 @@ The dominant failure — skip a lookup step (e.g. `get_flight_details`) and gues
 **Console check**: in Agent Platform → Optimize → Evaluation, the `Experiments`/`Metrics`/`Online monitors` tabs match the official course vocabulary exactly — but the `Experiments` tab shows no rows for these runs. This is a `v1beta1`/preview feature, not yet connected to that part of the console.
 
 ### Part 2 — managed run on the deployed agent
+
+**En simple:** el mismo experimento y las mismas 4 métricas de la Parte 1, pero corridas por Google en un solo trabajo administrado, contra el agente ya desplegado en la nube. El hallazgo importante: 2 de los 7 casos se perdieron por un error del servidor y el resultado no avisó — hay que contar los casos, no confiar en el resumen.
 
 Regenerates a fresh set of scenarios (same `generate_conversation_scenarios` call as Part 1 Step 1), then hands the whole job — not just scoring, but running the agent, scoring the traces, *and* clustering failures — to GEAP's **Eval Management Service** as one server-side job (`max_turn: 4`) against the *deployed* `travel_agent` (an Agent Engine resource, deployed earlier in the notebook and billable while it exists).
 
