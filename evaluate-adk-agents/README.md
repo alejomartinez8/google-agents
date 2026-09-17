@@ -51,6 +51,16 @@ This part grades the *same* fixed prompts in three different ways, to show that 
 | `final_response_match_v2` (LLM-judge) | `eval_config.judge.json` | 1.0 / 1.0 | ✅ pass | same responses ROUGE rejected |
 | `rubric_based_final_response_quality_v1` | `eval_config.rubric.json` | 0.5 | ❌ fail (refund case) | judge's *reason* was wrong, not just the score |
 
+**A concrete example, same prompt, two runs.** On turn 0 of the refund case, the prompt is *"I'd like a refund for order ORD-101."* Here is the expected answer next to what the agent actually said in each run:
+
+| | Text |
+|---|---|
+| Expected | "I can help with that. What is the reason for the refund on order ORD-101?" |
+| Actual — **reference run** | "Certainly! I can help you with that refund. Could you please let me know the reason for the refund for order ORD-101?" |
+| Actual — **judge run** (different run, same prompt) | "I can help you with that refund request for order ORD-101. Could you please let me know the reason for the refund?" |
+
+Both actual answers ask the same thing, in different words, and both say the same thing the expected answer says. But `response_match_score` scores the first one 0.67 — below the 0.8 threshold, so it **fails** — because it counts shared words, and "Certainly!" and "with that refund" are not in the expected text. `final_response_match_v2` scores the second one 1.0 — a clean **pass** — because the judge model reads both as making the same request. Same kind of paraphrase, opposite verdict, only because the grading method changed. (The exact wording differs between the two runs because the agent is nondeterministic — see the note in Part 2 of the notebook — but the pattern is the same one in every run.)
+
 **Reference metrics** (`eval_config.reference.json`) are cheap and exact. They do not call a model. `tool_trajectory_avg_score` simply compares the tool calls the agent actually made with the ones written in the eval set. `response_match_score` computes ROUGE-1, which measures word overlap between the agent's final text and the reference text. The trajectory metric passes, because the agent calls the right tool with the right arguments every time. ROUGE fails on 3 of 4 cases anyway, because the agent's *wording* is different from the reference text (for example, it adds a polite opening line, or lists the orders in a different way). Word overlap cannot tell a valid paraphrase apart from a wrong answer.
 
 **LLM-judge metric** (`eval_config.judge.json`) replaces ROUGE with `final_response_match_v2`. This metric asks a judge model whether the answer *means* the same thing as the reference answer, not whether it uses the same words. `num_samples: 5` calls the judge 5 times per response and averages the scores, for a more stable result. This metric costs money (it is a real model call) and needs an explicit threshold. But it accepts every answer that ROUGE rejected. Same agent, same answers, different verdict — because this grading method actually checks what we care about (meaning, not exact phrasing).
